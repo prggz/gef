@@ -24,6 +24,7 @@ import org.eclipse.gef.dot.internal.DotFileUtils;
 import org.eclipse.gef.dot.internal.language.DotInjectorProvider;
 import org.eclipse.gef.dot.internal.language.dot.DotAst;
 import org.eclipse.gef.dot.internal.language.dot.DotPackage;
+import org.eclipse.gef.dot.internal.language.validation.DotRecordLabelJavaValidator;
 import org.eclipse.xtext.junit4.InjectWith;
 import org.eclipse.xtext.junit4.XtextRunner;
 import org.eclipse.xtext.junit4.util.ParseHelper;
@@ -650,6 +651,18 @@ public class DotValidatorTests {
 	public void testRecordShapeLabel() throws Exception {
 		DotAst ast = parse("record_shape_node1.dot");
 		validationTestHelper.assertNoIssues(ast);
+	}
+
+	@Test
+	public void testInvalidPortAssignedSameNameRecordLabel() throws Exception {
+		String text = "digraph{ node [shape=record]; myNode [label=\"<here> foo | <here> more foo\"]; }";
+		DotAst dotAst = parserHelper.parse(text);
+
+		// FIXME
+		validationTestHelper.assertError(dotAst,
+				DotPackage.eINSTANCE.getAttribute(),
+				DotRecordLabelJavaValidator.PORT_NAME_DUPLICATE,
+				"Port name not uni3que");
 	}
 
 	private DotAst parse(String fileName) {

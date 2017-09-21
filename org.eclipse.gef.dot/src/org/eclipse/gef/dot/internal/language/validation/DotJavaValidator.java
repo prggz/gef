@@ -12,18 +12,27 @@
  *     Tamas Miklossy  - Add support for arrowType edge decorations (bug #477980)
  *                     - Add support for polygon-based node shapes (bug #441352)
  *                     - Add support for all dot attributes (bug #461506)
+ *     Zoey Gerrit Prigge - Add support for record label attributes (bug #454629)
  *
  *******************************************************************************/
 
 package org.eclipse.gef.dot.internal.language.validation;
 
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.gef.common.reflect.ReflectionUtils;
 import org.eclipse.gef.dot.internal.DotAttributes;
 import org.eclipse.gef.dot.internal.DotAttributes.Context;
 import org.eclipse.gef.dot.internal.language.DotAstHelper;
+import org.eclipse.gef.dot.internal.language.DotRecordLabelStandaloneSetup;
 import org.eclipse.gef.dot.internal.language.dot.AttrList;
 import org.eclipse.gef.dot.internal.language.dot.AttrStmt;
 import org.eclipse.gef.dot.internal.language.dot.Attribute;
@@ -35,13 +44,21 @@ import org.eclipse.gef.dot.internal.language.dot.EdgeRhsSubgraph;
 import org.eclipse.gef.dot.internal.language.dot.GraphType;
 import org.eclipse.gef.dot.internal.language.dot.NodeStmt;
 import org.eclipse.gef.dot.internal.language.shape.PolygonBasedNodeShape;
+import org.eclipse.gef.dot.internal.language.shape.RecordBasedNodeShape;
 import org.eclipse.gef.dot.internal.language.style.NodeStyle;
 import org.eclipse.gef.dot.internal.language.terminals.ID;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
+import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.parser.IParser;
+import org.eclipse.xtext.validation.AbstractInjectableValidator;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.RangeBasedDiagnostic;
+import org.eclipse.xtext.validation.ValidationMessageAcceptor;
+
+import com.google.inject.Injector;
 
 /**
  * Provides DOT-specific validation rules.
@@ -237,5 +254,143 @@ public class DotJavaValidator extends AbstractDotJavaValidator {
 			error("EdgeOp '->' may only be used in directed graphs.",
 					DotPackage.eINSTANCE.getEdgeRhs_Op());
 		}
+	}
+
+	/**
+	 * Use to run the recordLabel subgrammar validation on relevant labels
+	 * (label attributes on Nodes where a recordBased label shape attribute
+	 * exists).
+	 * 
+	 * @param attribute
+	 *            The attribute to validate.
+	 */
+	@Check
+	public void checkRecordBasedNodeShapeValue(Attribute attribute) {
+		if (DotAttributes.getContext(attribute).equals(Context.NODE)
+				&& attribute.getName().toValue()
+						.equals(DotAttributes.LABEL__GCNE)) {
+			String shapeValue = DotAstHelper.getDependedOnAttributeValue(
+					attribute, DotAttributes.SHAPE__N);
+			if (RecordBasedNodeShape.get(shapeValue) != null) {
+				doRecordLabelValidation(attribute);
+			}
+		}
+	}
+
+	private void doRecordLabelValidation(Attribute attribute) {
+		Injector recordLabelInjector = new DotRecordLabelStandaloneSetup()
+				.createInjectorAndDoEMFRegistration();
+		DotRecordLabelJavaValidator validator = recordLabelInjector
+				.getInstance(DotRecordLabelJavaValidator.class);
+		IParser parser = recordLabelInjector.getInstance(IParser.class);
+
+		IParseResult result = parser
+				.parse(new StringReader(attribute.getValue().toValue()));
+
+		// TODO understand the magic and check with Tamás
+
+		INode attributeNode = getFirstNodeForEObject(attribute,
+				DotPackage.Literals.ATTRIBUTE__VALUE);
+		final int attributeValueStartOffset = attributeNode != null
+				? attributeNode.getOffset() + 1 // this is a quoted label
+				: -1;
+
+		for (INode error : result.getSyntaxErrors()) {
+			SyntaxErrorMessage message = error.getSyntaxErrorMessage();
+			getMessageAcceptor().acceptError(
+					"Syntax error on attribute " + attribute.getName() + ": "
+							+ message.getMessage(),
+					attribute, attributeValueStartOffset + error.getOffset(),
+					error.getLength(), message.getIssueCode(),
+					message.getIssueData());
+		}
+
+		ValidationMessageAcceptor acceptor = new ValidationMessageAcceptor() {
+
+			@Override
+			public void acceptError(String message, EObject object,
+					EStructuralFeature feature, int index, String code,
+					String... issueData) {
+				INode node = getFirstNodeForEObject(object, feature);
+				getMessageAcceptor().acceptError(message, attribute,
+						attributeValueStartOffset + node.getOffset(),
+						node.getLength(), code, issueData);
+			}
+
+			@Override
+			public void acceptError(String message, EObject object, int offset,
+					int length, String code, String... issueData) {
+				getMessageAcceptor().acceptError(message, attribute,
+						offset >= 0 ? offset + attributeValueStartOffset
+								: offset,
+						length, code, issueData);
+			}
+
+			@Override
+			public void acceptInfo(String message, EObject object,
+					EStructuralFeature feature, int index, String code,
+					String... issueData) {
+				INode node = getFirstNodeForEObject(object, feature);
+				getMessageAcceptor().acceptInfo(message, attribute,
+						attributeValueStartOffset + node.getOffset(),
+						node.getLength(), code, issueData);
+			}
+
+			@Override
+			public void acceptInfo(String message, EObject object, int offset,
+					int length, String code, String... issueData) {
+				getMessageAcceptor().acceptInfo(message, attribute,
+						offset >= 0 ? offset + attributeValueStartOffset
+								: offset,
+						length, code, issueData);
+			}
+
+			@Override
+			public void acceptWarning(String message, EObject object,
+					EStructuralFeature feature, int index, String code,
+					String... issueData) {
+				INode node = getFirstNodeForEObject(object, feature);
+				getMessageAcceptor().acceptWarning(message, attribute,
+						attributeValueStartOffset + node.getOffset(),
+						node.getLength(), code, issueData);
+			}
+
+			@Override
+			public void acceptWarning(String message, EObject object,
+					int offset, int length, String code, String... issueData) {
+				getMessageAcceptor().acceptWarning(message, attribute,
+						offset >= 0 ? offset + attributeValueStartOffset
+								: offset,
+						length, code, issueData);
+			}
+		};
+
+		validator.setMessageAcceptor(acceptor);
+
+		Map<Object, Object> validationContext = new HashMap();
+		validationContext.put(AbstractInjectableValidator.CURRENT_LANGUAGE_NAME,
+				ReflectionUtils.getPrivateFieldValue(validator,
+						"languageName"));
+
+		Iterator<EObject> iterator = result.getRootASTElement().eAllContents();
+		while (iterator.hasNext()) {
+			validator.validate(iterator.next(), null/* diagnostic chain */,
+					validationContext);
+		}
+
+		validator.validate(result.getRootASTElement(), null, validationContext);
+	}
+
+	private INode getFirstNodeForEObject(EObject eObject,
+			EStructuralFeature eStructuralFeature) {
+		List<INode> nodes = NodeModelUtils.findNodesForFeature(eObject,
+				eStructuralFeature);
+		if (nodes.size() != 1) {
+			System.err.println("Exactly 1 node is expected for the eObject "
+					+ eObject + ", but got " + nodes.size());
+			return null;
+		}
+		INode node = nodes.get(0);
+		return node;
 	}
 }
