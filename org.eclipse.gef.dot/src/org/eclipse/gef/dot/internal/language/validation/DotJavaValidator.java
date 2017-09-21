@@ -27,7 +27,6 @@ import java.util.Map;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.gef.common.reflect.ReflectionUtils;
 import org.eclipse.gef.dot.internal.DotAttributes;
 import org.eclipse.gef.dot.internal.DotAttributes.Context;
@@ -49,14 +48,12 @@ import org.eclipse.gef.dot.internal.language.style.NodeStyle;
 import org.eclipse.gef.dot.internal.language.terminals.ID;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.parser.IParser;
 import org.eclipse.xtext.validation.AbstractInjectableValidator;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.RangeBasedDiagnostic;
-import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 
 import com.google.inject.Injector;
 
@@ -284,90 +281,21 @@ public class DotJavaValidator extends AbstractDotJavaValidator {
 				.getInstance(DotRecordLabelJavaValidator.class);
 		IParser parser = recordLabelInjector.getInstance(IParser.class);
 
+		ConvertingValidationMessageAcceptor messageAcceptor = new ConvertingValidationMessageAcceptor(
+				attribute, DotPackage.Literals.ATTRIBUTE__VALUE,
+				attribute.getName().toString(), getMessageAcceptor(),
+				"\"".length());
+
+		validator.setMessageAcceptor(messageAcceptor);
+
 		IParseResult result = parser
 				.parse(new StringReader(attribute.getValue().toValue()));
 
-		// TODO understand the magic and check with Tamás
-
-		INode attributeNode = getFirstNodeForEObject(attribute,
-				DotPackage.Literals.ATTRIBUTE__VALUE);
-		final int attributeValueStartOffset = attributeNode != null
-				? attributeNode.getOffset() + 1 // this is a quoted label
-				: -1;
-
 		for (INode error : result.getSyntaxErrors()) {
-			SyntaxErrorMessage message = error.getSyntaxErrorMessage();
-			getMessageAcceptor().acceptError(
-					"Syntax error on attribute " + attribute.getName() + ": "
-							+ message.getMessage(),
-					attribute, attributeValueStartOffset + error.getOffset(),
-					error.getLength(), message.getIssueCode(),
-					message.getIssueData());
+			messageAcceptor.acceptSyntaxError(error);
 		}
 
-		ValidationMessageAcceptor acceptor = new ValidationMessageAcceptor() {
-
-			@Override
-			public void acceptError(String message, EObject object,
-					EStructuralFeature feature, int index, String code,
-					String... issueData) {
-				INode node = getFirstNodeForEObject(object, feature);
-				getMessageAcceptor().acceptError(message, attribute,
-						attributeValueStartOffset + node.getOffset(),
-						node.getLength(), code, issueData);
-			}
-
-			@Override
-			public void acceptError(String message, EObject object, int offset,
-					int length, String code, String... issueData) {
-				getMessageAcceptor().acceptError(message, attribute,
-						offset >= 0 ? offset + attributeValueStartOffset
-								: offset,
-						length, code, issueData);
-			}
-
-			@Override
-			public void acceptInfo(String message, EObject object,
-					EStructuralFeature feature, int index, String code,
-					String... issueData) {
-				INode node = getFirstNodeForEObject(object, feature);
-				getMessageAcceptor().acceptInfo(message, attribute,
-						attributeValueStartOffset + node.getOffset(),
-						node.getLength(), code, issueData);
-			}
-
-			@Override
-			public void acceptInfo(String message, EObject object, int offset,
-					int length, String code, String... issueData) {
-				getMessageAcceptor().acceptInfo(message, attribute,
-						offset >= 0 ? offset + attributeValueStartOffset
-								: offset,
-						length, code, issueData);
-			}
-
-			@Override
-			public void acceptWarning(String message, EObject object,
-					EStructuralFeature feature, int index, String code,
-					String... issueData) {
-				INode node = getFirstNodeForEObject(object, feature);
-				getMessageAcceptor().acceptWarning(message, attribute,
-						attributeValueStartOffset + node.getOffset(),
-						node.getLength(), code, issueData);
-			}
-
-			@Override
-			public void acceptWarning(String message, EObject object,
-					int offset, int length, String code, String... issueData) {
-				getMessageAcceptor().acceptWarning(message, attribute,
-						offset >= 0 ? offset + attributeValueStartOffset
-								: offset,
-						length, code, issueData);
-			}
-		};
-
-		validator.setMessageAcceptor(acceptor);
-
-		Map<Object, Object> validationContext = new HashMap();
+		Map<Object, Object> validationContext = new HashMap<Object, Object>();
 		validationContext.put(AbstractInjectableValidator.CURRENT_LANGUAGE_NAME,
 				ReflectionUtils.getPrivateFieldValue(validator,
 						"languageName"));
@@ -381,16 +309,4 @@ public class DotJavaValidator extends AbstractDotJavaValidator {
 		validator.validate(result.getRootASTElement(), null, validationContext);
 	}
 
-	private INode getFirstNodeForEObject(EObject eObject,
-			EStructuralFeature eStructuralFeature) {
-		List<INode> nodes = NodeModelUtils.findNodesForFeature(eObject,
-				eStructuralFeature);
-		if (nodes.size() != 1) {
-			System.err.println("Exactly 1 node is expected for the eObject "
-					+ eObject + ", but got " + nodes.size());
-			return null;
-		}
-		INode node = nodes.get(0);
-		return node;
-	}
 }
