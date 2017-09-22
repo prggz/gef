@@ -677,7 +677,7 @@ public class DotValidatorTests {
 		validationTestHelper.assertWarning(dotAst,
 				DotPackage.eINSTANCE.getAttribute(),
 				DotRecordLabelJavaValidator.PORT_NAME_NOT_SET, 45, 2,
-				"Semantic error on Attribute label: Port unnamed: port cannot be referenced");
+				"Semantic warning on Attribute label: Port unnamed: port cannot be referenced");
 	}
 
 	@Test

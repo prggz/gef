@@ -291,22 +291,20 @@ public class DotJavaValidator extends AbstractDotJavaValidator {
 		IParseResult result = parser
 				.parse(new StringReader(attribute.getValue().toValue()));
 
-		for (INode error : result.getSyntaxErrors()) {
+		for (INode error : result.getSyntaxErrors())
 			messageAcceptor.acceptSyntaxError(error);
-		}
 
 		Map<Object, Object> validationContext = new HashMap<Object, Object>();
 		validationContext.put(AbstractInjectableValidator.CURRENT_LANGUAGE_NAME,
 				ReflectionUtils.getPrivateFieldValue(validator,
 						"languageName"));
 
+		// validate both the children (loop) and root element
 		Iterator<EObject> iterator = result.getRootASTElement().eAllContents();
-		while (iterator.hasNext()) {
+		while (iterator.hasNext())
 			validator.validate(iterator.next(), null/* diagnostic chain */,
 					validationContext);
-		}
 
 		validator.validate(result.getRootASTElement(), null, validationContext);
 	}
-
 }

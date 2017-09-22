@@ -76,7 +76,7 @@ public class ConvertingValidationMessageAcceptor
 	public void acceptSyntaxError(INode error) {
 		SyntaxErrorMessage errorMessage = error.getSyntaxErrorMessage();
 		hostMessageAcceptor.acceptError(
-				buildMessage("Syntax", errorMessage.getMessage()),
+				buildMessage("Syntax error", errorMessage.getMessage()),
 				hostingEObject, calculateOffset(error.getOffset()),
 				error.getLength(), errorMessage.getIssueCode(),
 				errorMessage.getIssueData());
@@ -87,15 +87,16 @@ public class ConvertingValidationMessageAcceptor
 			EStructuralFeature feature, int index, String code,
 			String... issueData) {
 		for (INode node : getNodesForEObject(object, feature))
-			hostMessageAcceptor.acceptError(buildMessage("Semantic", message),
-					hostingEObject, calculateOffset(node.getOffset()),
-					node.getLength(), code, issueData);
+			hostMessageAcceptor.acceptError(
+					buildMessage("Semantic error", message), hostingEObject,
+					calculateOffset(node.getOffset()), node.getLength(), code,
+					issueData);
 	}
 
 	@Override
 	public void acceptError(String message, EObject object, int offset,
 			int length, String code, String... issueData) {
-		hostMessageAcceptor.acceptError(buildMessage("Semantic", message),
+		hostMessageAcceptor.acceptError(buildMessage("Semantic error", message),
 				hostingEObject, calculateOffset(offset), length, code,
 				issueData);
 	}
@@ -105,7 +106,8 @@ public class ConvertingValidationMessageAcceptor
 			EStructuralFeature feature, int index, String code,
 			String... issueData) {
 		for (INode node : getNodesForEObject(object, feature))
-			hostMessageAcceptor.acceptInfo(buildMessage("Semantic", message),
+			hostMessageAcceptor.acceptInfo(
+					buildMessage("Semantic issue info", message),
 					hostingEObject, calculateOffset(node.getOffset()),
 					node.getLength(), code, issueData);
 	}
@@ -113,9 +115,9 @@ public class ConvertingValidationMessageAcceptor
 	@Override
 	public void acceptInfo(String message, EObject object, int offset,
 			int length, String code, String... issueData) {
-		hostMessageAcceptor.acceptInfo(buildMessage("Semantic", message),
-				hostingEObject, calculateOffset(offset), length, code,
-				issueData);
+		hostMessageAcceptor.acceptInfo(
+				buildMessage("Semantic issue info", message), hostingEObject,
+				calculateOffset(offset), length, code, issueData);
 	}
 
 	@Override
@@ -123,18 +125,19 @@ public class ConvertingValidationMessageAcceptor
 			EStructuralFeature feature, int index, String code,
 			String... issueData) {
 		for (INode node : getNodesForEObject(object, feature))
-			hostMessageAcceptor.acceptWarning(buildMessage("Semantic", message),
-					hostingEObject, calculateOffset(node.getOffset()),
-					node.getLength(), code, issueData);
+			hostMessageAcceptor.acceptWarning(
+					buildMessage("Semantic warning", message), hostingEObject,
+					calculateOffset(node.getOffset()), node.getLength(), code,
+					issueData);
 
 	}
 
 	@Override
 	public void acceptWarning(String message, EObject object, int offset,
 			int length, String code, String... issueData) {
-		hostMessageAcceptor.acceptWarning(buildMessage("Semantic", message),
-				hostingEObject, calculateOffset(offset), length, code,
-				issueData);
+		hostMessageAcceptor.acceptWarning(
+				buildMessage("Semantic warning", message), hostingEObject,
+				calculateOffset(offset), length, code, issueData);
 	}
 
 	private int calculateInitialOffset(EStructuralFeature hostingFeature,
@@ -147,6 +150,9 @@ public class ConvertingValidationMessageAcceptor
 	}
 
 	private int calculateOffset(int offset) {
+		// in theory, initialOffset and offset should always be positive.
+		// but if one is negative, adding them seems useless.
+		// TODO checked if and when and how to handle
 		return offset >= 0 && initialOffset >= 0 ? offset + initialOffset
 				: offset;
 	}
@@ -155,6 +161,8 @@ public class ConvertingValidationMessageAcceptor
 			EStructuralFeature eStructuralFeature) {
 		List<INode> nodes = NodeModelUtils.findNodesForFeature(eObject,
 				eStructuralFeature);
+		// if the result is empty, possibly the feature is not set
+		// hence we try to find the note for the entire eObject
 		if (nodes.size() == 0) {
 			nodes = new ArrayList<INode>();
 			nodes.add(NodeModelUtils.findActualNodeFor(eObject));
@@ -164,7 +172,7 @@ public class ConvertingValidationMessageAcceptor
 
 	private String buildMessage(String errorType, String errorMessage) {
 		StringBuilder message = new StringBuilder();
-		message.append(errorType).append(" error on ")
+		message.append(errorType).append(" on ")
 				.append(hostingEObject.eClass().getName()).append(" ")
 				.append(userReadableIdentifier).append(": ");
 		message.append(errorMessage);
