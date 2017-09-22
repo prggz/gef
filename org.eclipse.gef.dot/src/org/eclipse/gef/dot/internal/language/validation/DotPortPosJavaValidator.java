@@ -3,17 +3,53 @@
  */
 package org.eclipse.gef.dot.internal.language.validation;
 
-/**
- * This class contains custom validation rules. 
- *
- * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
- */
-public class DotPortPosJavaValidator extends org.eclipse.gef.dot.internal.language.validation.AbstractDotPortPosJavaValidator {
+import java.util.List;
 
-//	@Check
-//	public void checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.getName().charAt(0))) {
-//			warning("Name should start with a capital", MyDslPackage.Literals.GREETING__NAME);
-//		}
-//	}
+import org.eclipse.gef.dot.internal.language.portpos.CompassPointPos;
+import org.eclipse.gef.dot.internal.language.portpos.Port;
+import org.eclipse.gef.dot.internal.language.portpos.PortposPackage;
+import org.eclipse.xtext.validation.Check;
+
+/**
+ * This class contains custom validation rules.
+ *
+ * See
+ * https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
+ */
+public class DotPortPosJavaValidator extends
+		org.eclipse.gef.dot.internal.language.validation.AbstractDotPortPosJavaValidator {
+
+	/**
+	 * Key to map the port name list in the validation context.
+	 */
+	public static final String PORTNAME_LIST = "portname_list";
+
+	/**
+	 * Checks if the port name can be referenced in the validation context
+	 * 
+	 * @param port
+	 *            port to be checked.
+	 */
+	@SuppressWarnings("unchecked")
+	@Check
+	public void checkPortname(Port port) {
+		if (!port.eIsSet(PortposPackage.Literals.PORT_POS__COMPASS_POINT)
+				&& CompassPointPos.get(port.getName()) != null)
+			return; // port name is valid if it is a compass point
+
+		// we expect the port names that are defined to be included in
+		// validation context
+		Object portsUnchecked = getContext().get(PORTNAME_LIST);
+		if (portsUnchecked == null || !(portsUnchecked instanceof List))
+			return;
+		List<Object> portNames = (List<Object>) portsUnchecked;
+		long suchNamedPorts = portNames.stream().filter(
+				portName -> portName != null && portName.equals(port.getName()))
+				.count();
+		if (suchNamedPorts < 1)
+			error("Referenced port does not exist",
+					PortposPackage.Literals.PORT__NAME);
+		if (suchNamedPorts > 1)
+			error("Port name ambiguous", PortposPackage.Literals.PORT__NAME);
+	}
 }
