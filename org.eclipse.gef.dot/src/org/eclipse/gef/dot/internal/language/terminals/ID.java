@@ -14,6 +14,11 @@ package org.eclipse.gef.dot.internal.language.terminals;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.gef.dot.internal.DotAttributes;
+import org.eclipse.gef.graph.Edge;
+import org.eclipse.gef.graph.Graph;
+import org.eclipse.gef.graph.Node;
+
 /**
  * A representation of a Dot ID according to the Graphviz DOT grammar.
  * 
@@ -267,6 +272,42 @@ public class ID {
 	@Override
 	public String toString() {
 		return string;
+	}
+
+	/**
+	 * @param node
+	 *            node related to ID
+	 * @return decoded value
+	 */
+	public String toValue(Node node) {
+		return toValue(node.getGraph()).replaceAll("\\\\N",
+				DotAttributes._getName(node));
+	}
+
+	/**
+	 * @param edge
+	 *            edge related to ID
+	 * @return decoded value
+	 */
+	public String toValue(Edge edge) {
+		Node tail = edge.getSource();
+		Node head = edge.getTarget();
+		return toValue(edge.getGraph())
+				.replaceAll("\\\\E", DotAttributes._getName(edge))
+				.replaceAll("\\\\T",
+						tail != null ? DotAttributes._getName(tail) : "")
+				.replaceAll("\\\\H",
+						tail != null ? DotAttributes._getName(head) : "");
+	}
+
+	/**
+	 * @param graph
+	 *            graph related to ID
+	 * @return decoded value
+	 */
+	public String toValue(Graph graph) {
+		return toValue().replaceAll("\\\\G",
+				graph != null ? DotAttributes._getName(graph) : "");
 	}
 
 	/**

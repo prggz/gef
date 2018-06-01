@@ -130,11 +130,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 		}
 
 		String dotLabel = DotAttributes.getLabel(dot);
-		if ("\\E".equals(dotLabel)) { //$NON-NLS-1$
-			// The escString '\E' indicates that the edge's name becomes its
-			// label.
-			dotLabel = DotAttributes._getName(dot);
-		}
 		if (dotLabel != null) {
 			dotLabel = decode(dotLabel);
 			ZestProperties.setLabel(zest, dotLabel);
@@ -504,7 +499,7 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 
 		// label
 		String dotLabel = DotAttributes.getLabel(dot);
-		if (dotLabel == null || dotLabel.equals("\\N")) { //$NON-NLS-1$
+		if (dotLabel == null) {
 			// The escString '\N' (the node's default label) indicates that the
 			// node's name becomes its label.
 			dotLabel = DotAttributes._getName(dot);

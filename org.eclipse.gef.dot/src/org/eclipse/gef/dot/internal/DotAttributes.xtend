@@ -1482,7 +1482,7 @@ class DotAttributes {
 	@DotAttribute(parsedType=String)
 	public static val String ID__GCNE = "id"
 
-	@DotAttribute(parsedType=String)
+	@DotAttribute(parsedType=String, valueIsContextSensitive=true)
 	public static val String LABEL__GCNE = "label"
 
 	@DotAttribute(parsedType=Color)

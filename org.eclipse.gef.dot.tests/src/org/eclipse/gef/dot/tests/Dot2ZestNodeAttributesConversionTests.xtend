@@ -139,6 +139,30 @@ class Dot2ZestNodeAttributesConversionTests {
 		'''.assertNodeLabel("label")
 	}
 	
+	@Test def node_label006() {
+		'''
+			digraph {
+				1[label="label \N"]
+			}
+		'''.assertNodeLabel("label 1")
+	}
+	
+	@Test def node_label007() {
+		'''
+			digraph {
+				sample [label="\N"]
+			}
+		'''.assertNodeLabel("sample")
+	}
+	
+	@Test def node_label008() {
+		'''
+			graph mygraph {
+				a[label="graph: \G, node no. \N"]
+			}
+		'''.assertNodeLabel("graph: mygraph, node no. a")
+	}
+	
 	@Test def node_id001() {
 		'''
 			digraph {

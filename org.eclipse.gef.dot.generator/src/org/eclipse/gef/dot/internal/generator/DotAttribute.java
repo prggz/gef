@@ -13,7 +13,7 @@ package org.eclipse.gef.dot.internal.generator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import org.eclipse.gef.dot.internal.generator.DotAttributeProcessor;
+
 import org.eclipse.xtend.lib.macro.Active;
 
 /**
@@ -22,14 +22,22 @@ import org.eclipse.xtend.lib.macro.Active;
 @Target(ElementType.FIELD)
 @Active(DotAttributeProcessor.class)
 public @interface DotAttribute {
-  /**
-   * A string matching an ID.Type to use for this attribute
-   */
-  public String[] rawType() default { "" };
-  /**
-   * Type of the attribute.
-   * 
-   * @return The type of the attribute.
-   */
-  public Class<?>[] parsedType();
+	/**
+	 * A string matching an ID.Type to use for this attribute
+	 */
+	public String[] rawType() default { "" };
+
+	/**
+	 * Type of the attribute.
+	 * 
+	 * @return The type of the attribute.
+	 */
+	public Class<?>[] parsedType();
+
+	/**
+	 * Whether the toValue function should be executed context sensitively
+	 * 
+	 * @return true, if so.
+	 */
+	public boolean valueIsContextSensitive() default false;
 }

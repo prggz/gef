@@ -61,6 +61,8 @@ public class DotAttributeProcessor extends AbstractFieldProcessor {
 				"rawType");
 		TypeReference[] attributeParsedTypes = (TypeReference[]) annotationValue(
 				field, context, "parsedType");
+		Boolean valueIsContextSensitive = (Boolean) annotationValue(field,
+				context, "valueIsContextSensitive");
 
 		// field comment
 		field.setDocComment("The '" + attributeName
@@ -200,12 +202,17 @@ public class DotAttributeProcessor extends AbstractFieldProcessor {
 						method.setReturnType(
 								context.newTypeReference(String.class));
 
+						String toValueParameter = valueIsContextSensitive
+								? paramName(c)
+								: "";
+
 						StringBuilder body = new StringBuilder();
 						body.append("ID " + attributeName + "Raw = "
 								+ rawGetterName(field) + "(" + paramName(c)
 								+ ");\n");
 						body.append("return " + attributeName + "Raw != null ? "
-								+ attributeName + "Raw.toValue() : null;");
+								+ attributeName + "Raw.toValue("
+								+ toValueParameter + ") : null;");
 						method.setBody((ctx) -> body.toString());
 						context.setPrimarySourceElement(method, field);
 						context.setPrimarySourceElement(method, field);
