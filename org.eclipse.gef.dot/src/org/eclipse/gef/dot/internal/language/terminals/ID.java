@@ -280,8 +280,31 @@ public class ID {
 	 * @return decoded value
 	 */
 	public String toValue(Node node) {
-		return toValue(node.getGraph()).replaceAll("\\\\N",
-				DotAttributes._getName(node));
+		Graph graph = node.getGraph();
+
+		ID rawLabel = DotAttributes.getLabelRaw(node);
+
+		String nodeName = DotAttributes._getName(node);
+		String graphName = graph != null ? DotAttributes._getName(graph) : null;
+
+		/*
+		 * \L is replaced first using the raw Label, such that we can avoid a
+		 * loop if a label contains \L. As such, we need to double all
+		 * backslashes as single backslashes are consumed by replace all.
+		 * 
+		 * For a node, the label defaults to \N.
+		 * 
+		 * Graphviz behaviour differs slightly for unset names and error
+		 * handling, however we cannot reproduce this (i.e. an internally used
+		 * variable is produced and for escape sequences invalid in this
+		 * context, e.g. \E, graphviz removes the backslash.)
+		 */
+		return toValue()
+				.replaceAll("\\\\L",
+						(rawLabel != null ? rawLabel.toValue() : "\\N")
+								.replaceAll("\\\\", "\\\\\\\\"))
+				.replaceAll("\\\\N", nodeName != null ? nodeName : "")
+				.replaceAll("\\\\G", graphName != null ? graphName : "");
 	}
 
 	/**
@@ -292,12 +315,33 @@ public class ID {
 	public String toValue(Edge edge) {
 		Node tail = edge.getSource();
 		Node head = edge.getTarget();
-		return toValue(edge.getGraph())
-				.replaceAll("\\\\E", DotAttributes._getName(edge))
-				.replaceAll("\\\\T",
-						tail != null ? DotAttributes._getName(tail) : "")
-				.replaceAll("\\\\H",
-						tail != null ? DotAttributes._getName(head) : "");
+		Graph graph = edge.getGraph();
+
+		ID rawLabel = DotAttributes.getLabelRaw(edge);
+
+		String edgeName = DotAttributes._getName(edge);
+		String tailName = tail != null ? DotAttributes._getName(tail) : null;
+		String headName = head != null ? DotAttributes._getName(head) : null;
+		String graphName = graph != null ? DotAttributes._getName(graph) : null;
+
+		/*
+		 * \L is replaced first using the raw Label, such that we can avoid a
+		 * loop if a label contains \L. As such, we need to double all
+		 * backslashes as single backslashes are consumed by replace all.
+		 * 
+		 * Graphviz behaviour differs slightly for unset names and error
+		 * handling, however we cannot reproduce this (i.e. an internally used
+		 * variable is produced and for escape sequences invalid in this
+		 * context, e.g. \N, graphviz removes the backslash.)
+		 */
+		return toValue()
+				.replaceAll("\\\\L",
+						(rawLabel != null ? rawLabel.toValue() : "")
+								.replaceAll("\\\\", "\\\\\\\\"))
+				.replaceAll("\\\\E", edgeName != null ? edgeName : "")
+				.replaceAll("\\\\T", tailName != null ? tailName : "")
+				.replaceAll("\\\\H", headName != null ? headName : "")
+				.replaceAll("\\\\G", graphName != null ? graphName : "");
 	}
 
 	/**
@@ -306,8 +350,26 @@ public class ID {
 	 * @return decoded value
 	 */
 	public String toValue(Graph graph) {
-		return toValue().replaceAll("\\\\G",
-				graph != null ? DotAttributes._getName(graph) : "");
+
+		ID rawLabel = DotAttributes.getLabelRaw(graph);
+
+		String graphName = DotAttributes._getName(graph);
+
+		/*
+		 * \L is replaced first using the raw Label, such that we can avoid a
+		 * loop if a label contains \L. As such, we need to double all
+		 * backslashes as single backslashes are consumed by replace all.
+		 * 
+		 * Graphviz behaviour differs slightly for unset names and error
+		 * handling, however we cannot reproduce this (i.e. an internally used
+		 * variable is produced and for escape sequences invalid in this
+		 * context, e.g. \N, graphviz removes the backslash.)
+		 */
+		return toValue()
+				.replaceAll("\\\\L",
+						(rawLabel != null ? rawLabel.toValue() : "")
+								.replaceAll("\\\\", "\\\\\\\\"))
+				.replaceAll("\\\\G", graphName != null ? graphName : "");
 	}
 
 	/**

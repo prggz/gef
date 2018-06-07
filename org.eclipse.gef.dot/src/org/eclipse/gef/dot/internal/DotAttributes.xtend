@@ -1444,7 +1444,7 @@ class DotAttributes {
 	@DotAttribute(rawType="NUMERAL", parsedType=Double)
 	public static val String DISTORTION__N = "distortion"
 
-	@DotAttribute(parsedType=EscString)
+	@DotAttribute(parsedType=EscString, valueIsContextSensitive=true)
 	public static val String EDGETOOLTIP__E = "edgetooltip"
 
 	/**
@@ -1467,19 +1467,19 @@ class DotAttributes {
 	@DotAttribute(rawType="QUOTED_STRING", parsedType=Point)
 	public static val String HEAD_LP__E = "head_lp"
 
-	@DotAttribute(parsedType=String)
+	@DotAttribute(parsedType=String, valueIsContextSensitive=true)
 	public static val String HEADLABEL__E = "headlabel"
 	
 	@DotAttribute(parsedType=PortPos)
 	public static val String HEADPORT__E = "headport"
 
-	@DotAttribute(parsedType=EscString)
+	@DotAttribute(parsedType=EscString, valueIsContextSensitive=true)
 	public static val String HEADTOOLTIP__E = "headtooltip"
 
 	@DotAttribute(rawType="NUMERAL", parsedType=Double)
 	public static val String HEIGHT__N = "height"
 
-	@DotAttribute(parsedType=String)
+	@DotAttribute(parsedType=String, valueIsContextSensitive=true)
 	public static val String ID__GCNE = "id"
 
 	@DotAttribute(parsedType=String, valueIsContextSensitive=true)
@@ -1488,7 +1488,7 @@ class DotAttributes {
 	@DotAttribute(parsedType=Color)
 	public static val String LABELFONTCOLOR__E = "labelfontcolor"
 
-	@DotAttribute(parsedType=EscString)
+	@DotAttribute(parsedType=EscString, valueIsContextSensitive=true)
 	public static val String LABELTOOLTIP__E = "labeltooltip"
 
 	@DotAttribute(rawType="STRING", parsedType=Layout)
@@ -1538,22 +1538,22 @@ class DotAttributes {
 	@DotAttribute(rawType="QUOTED_STRING", parsedType=Point)
 	public static val String TAIL_LP__E = "tail_lp"
 
-	@DotAttribute(parsedType=String)
+	@DotAttribute(parsedType=String, valueIsContextSensitive=true)
 	public static val String TAILLABEL__E = "taillabel"
 	
 	@DotAttribute(parsedType=PortPos)
 	public static val String TAILPORT__E = "tailport"
 
-	@DotAttribute(parsedType=EscString)
+	@DotAttribute(parsedType=EscString, valueIsContextSensitive=true)
 	public static val String TAILTOOLTIP__E = "tailtooltip"
 
-	@DotAttribute(parsedType=EscString)
+	@DotAttribute(parsedType=EscString, valueIsContextSensitive=true)
 	public static val String TOOLTIP__CNE = "tooltip"
 
 	@DotAttribute(rawType="NUMERAL", parsedType=Double)
 	public static val String WIDTH__N = "width"
 
-	@DotAttribute(parsedType=String)
+	@DotAttribute(parsedType=String, valueIsContextSensitive=true)
 	public static val String XLABEL__NE = "xlabel"
 
 	@DotAttribute(rawType="QUOTED_STRING", parsedType=Point)
