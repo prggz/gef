@@ -336,7 +336,7 @@ class DotAttributes {
 
 	// TODO: separate validation from parsing
 	private static def <T> List<Diagnostic> validateAttributeRawValue(IAttributeValueParser<T> parser,
-		IAttributeValueValidator<T> validator, Context attributeContext, String attributeName, ID attributeValue) {
+		IAttributeValueValidator<T> validator, Context attributeContext, String attributeName, ID attributeValue, ValidationMessageAcceptor acceptor) {
 
 		// determine dot attribute type name from parsed type
 		val attributeType = if(parser === null) String else parser.parsedType
@@ -409,100 +409,105 @@ class DotAttributes {
 	 * @return A list of {@link Diagnostic} objects representing the identified
 	 *         issues, or an empty list if no issues were found.
 	 */
+	 static def List<Diagnostic> validateAttributeRawValue(Context attributeContext, String attributeName,
+		ID attributeValue) {
+			return validateAttributeRawValue(attributeContext, attributeName,attributeValue, null)
+	}
+	 
 	// TODO: this can be generated, as well as the validators, parsers and serializers that are needed
 	static def List<Diagnostic> validateAttributeRawValue(Context attributeContext, String attributeName,
-		ID attributeValue) {
+		ID attributeValue, ValidationMessageAcceptor acceptor) {
 
 		// use parser (and validator) for respective attribute type
 		return switch (attributeName) {
-			case ARROWHEAD__E: validateAttributeRawValue(ARROWTYPE_PARSER, ARROWTYPE_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case ARROWSIZE__E: validateAttributeRawValue(DOUBLE_PARSER,	ARROWSIZE_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case ARROWTAIL__E: validateAttributeRawValue(ARROWTYPE_PARSER, ARROWTYPE_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case BB__GC: validateAttributeRawValue(RECT_PARSER, RECT_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case BGCOLOR__GC: validateAttributeRawValue(COLORLIST_PARSER, COLORLIST_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case CLUSTERRANK__G: validateAttributeRawValue(CLUSTERMODE_PARSER, null, attributeContext, attributeName, attributeValue)
-			case COLORSCHEME__GCNE: validateAttributeRawValue(null, COLORSCHEME_VALIDATOR,	attributeContext, attributeName, attributeValue)
+			case ARROWHEAD__E: validateAttributeRawValue(ARROWTYPE_PARSER, ARROWTYPE_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case ARROWSIZE__E: validateAttributeRawValue(DOUBLE_PARSER,	ARROWSIZE_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case ARROWTAIL__E: validateAttributeRawValue(ARROWTYPE_PARSER, ARROWTYPE_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case BB__GC: validateAttributeRawValue(RECT_PARSER, RECT_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case BGCOLOR__GC: validateAttributeRawValue(COLORLIST_PARSER, COLORLIST_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case CLUSTERRANK__G: validateAttributeRawValue(CLUSTERMODE_PARSER, null, attributeContext, attributeName, attributeValue, acceptor)
+			case COLORSCHEME__GCNE: validateAttributeRawValue(null, COLORSCHEME_VALIDATOR,	attributeContext, attributeName, attributeValue, acceptor)
 			case COLOR__CNE:
 				if(attributeValue!==null && !attributeValue.toValue.isEmpty){
 					// TODO: remove "attributeContext == Context.GRAPH", since color is not a valid graph attribute
 					if(attributeContext == Context.GRAPH || attributeContext == Context.CLUSTER || attributeContext == Context.NODE)
-						validateAttributeRawValue(COLOR_PARSER, COLOR_VALIDATOR, attributeContext, attributeName, attributeValue)
+						validateAttributeRawValue(COLOR_PARSER, COLOR_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 					else if (attributeContext == Context.EDGE)
-						validateAttributeRawValue(COLORLIST_PARSER, COLORLIST_VALIDATOR, attributeContext, attributeName, attributeValue)
+						validateAttributeRawValue(COLORLIST_PARSER, COLORLIST_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 					else
 						Collections.emptyList
 				}else
 					Collections.emptyList
 			case DIR__E:
 				if(attributeValue!==null && !attributeValue.toValue.isEmpty){
-					validateAttributeRawValue(DIRTYPE_PARSER, null, attributeContext, attributeName, attributeValue)
+					validateAttributeRawValue(DIRTYPE_PARSER, null, attributeContext, attributeName, attributeValue, acceptor)
 				}else
 					Collections.emptyList
-			case DISTORTION__N: validateAttributeRawValue(DOUBLE_PARSER, DISTORTION_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case EDGETOOLTIP__E: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue)
+			case DISTORTION__N: validateAttributeRawValue(DOUBLE_PARSER, DISTORTION_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case EDGETOOLTIP__E: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 			case FILLCOLOR__CNE: 
 				// TODO: remove "attributeContext == Context.GRAPH", since fillcolor is not a valid graph attribute
 				if(attributeContext == Context.GRAPH || attributeContext == Context.CLUSTER || attributeContext == Context.NODE)
-					validateAttributeRawValue(COLORLIST_PARSER, COLORLIST_VALIDATOR, attributeContext, attributeName, attributeValue)
+					validateAttributeRawValue(COLORLIST_PARSER, COLORLIST_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 				else if (attributeContext == Context.EDGE)
-					validateAttributeRawValue(COLOR_PARSER, COLOR_VALIDATOR, attributeContext, attributeName, attributeValue)
+					validateAttributeRawValue(COLOR_PARSER, COLOR_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 				else
 					Collections.emptyList
 			case FIXEDSIZE__N: 
 				if(attributeValue!==null && !attributeValue.toValue.isEmpty){
-					validateAttributeRawValue(BOOL_PARSER, null, attributeContext, FIXEDSIZE__N, attributeValue)
+					validateAttributeRawValue(BOOL_PARSER, null, attributeContext, FIXEDSIZE__N, attributeValue, acceptor)
 				}else
 					Collections.emptyList
-			case FONTCOLOR__GCNE: validateAttributeRawValue(COLOR_PARSER, COLOR_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case FONTNAME__GCNE: validateAttributeRawValue(FONTNAME_PARSER, null, attributeContext, attributeName, attributeValue)
-			case FONTSIZE__GCNE: validateAttributeRawValue(DOUBLE_PARSER, FONTSIZE_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case FORCELABELS__G: validateAttributeRawValue(BOOL_PARSER, null, attributeContext, FORCELABELS__G, attributeValue)
-			case HEAD_LP__E: validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case HEADPORT__E: validateAttributeRawValue(PORTPOS_PARSER, PORTPOS_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case HEADTOOLTIP__E: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case HEIGHT__N: validateAttributeRawValue(DOUBLE_PARSER, HEIGHT_VALIDATOR, attributeContext, attributeName, attributeValue)
+			case FONTCOLOR__GCNE: validateAttributeRawValue(COLOR_PARSER, COLOR_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case FONTNAME__GCNE: validateAttributeRawValue(FONTNAME_PARSER, null, attributeContext, attributeName, attributeValue, acceptor)
+			case FONTSIZE__GCNE: validateAttributeRawValue(DOUBLE_PARSER, FONTSIZE_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case FORCELABELS__G: validateAttributeRawValue(BOOL_PARSER, null, attributeContext, FORCELABELS__G, attributeValue, acceptor)
+			case HEAD_LP__E: validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case HEADPORT__E: validateAttributeRawValue(PORTPOS_PARSER, PORTPOS_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case HEADTOOLTIP__E: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case HEIGHT__N: validateAttributeRawValue(DOUBLE_PARSER, HEIGHT_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 			case LABEL__GCNE:
 				if (attributeValue.type == ID.Type.HTML_STRING)
-					validateAttributeRawValue(HTML_LABEL_PARSER, HTML_LABEL_VALIDATOR, attributeContext, attributeName, attributeValue)
+					validateAttributeRawValue(HTML_LABEL_PARSER, HTML_LABEL_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 				else if (attributeValue.type == ID.Type.QUOTED_STRING)
-					validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue)
+					validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 				else
 					Collections.emptyList
-			case LABELFONTCOLOR__E: validateAttributeRawValue(COLOR_PARSER, COLOR_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case LABELFONTNAME__E: validateAttributeRawValue(FONTNAME_PARSER, null, attributeContext, attributeName, attributeValue)
-			case LABELFONTSIZE__E: validateAttributeRawValue(DOUBLE_PARSER, FONTSIZE_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case LABELTOOLTIP__E: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case LAYOUT__G: validateAttributeRawValue(LAYOUT_PARSER, null, attributeContext, attributeName, attributeValue)
-			case LP__GCE: validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case NODESEP__G: validateAttributeRawValue(DOUBLE_PARSER, NODESEP_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case OUTPUTORDER__G: validateAttributeRawValue(OUTPUTMODE_PARSER, null,	attributeContext, attributeName, attributeValue) 
-			case PAGEDIR__G: validateAttributeRawValue(PAGEDIR_PARSER, null, attributeContext, attributeName, attributeValue)
+			case LABELFONTCOLOR__E: validateAttributeRawValue(COLOR_PARSER, COLOR_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case LABELFONTNAME__E: validateAttributeRawValue(FONTNAME_PARSER, null, attributeContext, attributeName, attributeValue, acceptor)
+			case LABELFONTSIZE__E: validateAttributeRawValue(DOUBLE_PARSER, FONTSIZE_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case LABELTOOLTIP__E: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case LAYOUT__G: validateAttributeRawValue(LAYOUT_PARSER, null, attributeContext, attributeName, attributeValue, acceptor)
+			case LP__GCE: validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case NODESEP__G: validateAttributeRawValue(DOUBLE_PARSER, NODESEP_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case OUTPUTORDER__G: validateAttributeRawValue(OUTPUTMODE_PARSER, null,	attributeContext, attributeName, attributeValue, acceptor) 
+			case PAGEDIR__G: validateAttributeRawValue(PAGEDIR_PARSER, null, attributeContext, attributeName, attributeValue, acceptor)
 			case PENWIDTH__CNE: 
 				if(attributeValue!==null && !attributeValue.toValue.isEmpty) {
-					validateAttributeRawValue(DOUBLE_PARSER, PENWIDTH_VALIDATOR, attributeContext, attributeName, attributeValue)
+					validateAttributeRawValue(DOUBLE_PARSER, PENWIDTH_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 				} else {
 					Collections.emptyList
 				}
 			case POS__NE:
 				if (attributeContext == Context.NODE)
-					validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue)
+					validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 				else if (attributeContext == Context.EDGE)
-					validateAttributeRawValue(SPLINETYPE_PARSER, SPLINETYPE_VALIDATOR, attributeContext, attributeName, attributeValue)
+					validateAttributeRawValue(SPLINETYPE_PARSER, SPLINETYPE_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 				else
 					Collections.emptyList
-			case RANKDIR__G: validateAttributeRawValue(RANKDIR_PARSER, null, attributeContext, attributeName, attributeValue)
-			case RANK__S: validateAttributeRawValue(RANKTYPE_PARSER, null, attributeContext, attributeName, attributeValue)
-			case SHAPE__N: validateAttributeRawValue(SHAPE_PARSER, SHAPE_VALIDATOR, attributeContext, attributeName, attributeValue) 
-			case SIDES__N: validateAttributeRawValue(INT_PARSER, SIDES_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case SKEW__N: validateAttributeRawValue(DOUBLE_PARSER, SKEW_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case SPLINES__G: validateAttributeRawValue(SPLINES_PARSER, null, attributeContext, attributeName, attributeValue)
-			case STYLE__GCNE: validateAttributeRawValue(STYLE_PARSER, STYLE_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case TAIL_LP__E: validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case TAILPORT__E: validateAttributeRawValue(PORTPOS_PARSER, PORTPOS_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case TAILTOOLTIP__E: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case TOOLTIP__CNE: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case WIDTH__N: validateAttributeRawValue(DOUBLE_PARSER, WIDTH_VALIDATOR, attributeContext, attributeName, attributeValue)
-			case XLP__NE: validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue)
+			case RANKDIR__G: validateAttributeRawValue(RANKDIR_PARSER, null, attributeContext, attributeName, attributeValue, acceptor)
+			case RANK__S: validateAttributeRawValue(RANKTYPE_PARSER, null, attributeContext, attributeName, attributeValue, acceptor)
+			case SHAPE__N: validateAttributeRawValue(SHAPE_PARSER, SHAPE_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor) 
+			case SIDES__N: validateAttributeRawValue(INT_PARSER, SIDES_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case SKEW__N: validateAttributeRawValue(DOUBLE_PARSER, SKEW_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case SPLINES__G: validateAttributeRawValue(SPLINES_PARSER, null, attributeContext, attributeName, attributeValue, acceptor)
+			case STYLE__GCNE: validateAttributeRawValue(STYLE_PARSER, STYLE_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case TAIL_LP__E: validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case TAILPORT__E: validateAttributeRawValue(PORTPOS_PARSER, PORTPOS_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case TAILTOOLTIP__E: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case TOOLTIP__CNE: validateAttributeRawValue(ESCSTRING_PARSER, ESCSTRING_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case WIDTH__N: validateAttributeRawValue(DOUBLE_PARSER, WIDTH_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
+			case XLP__NE: validateAttributeRawValue(POINT_PARSER, POINT_VALIDATOR, attributeContext, attributeName, attributeValue, acceptor)
 			default: {
 				Collections.emptyList
 			}

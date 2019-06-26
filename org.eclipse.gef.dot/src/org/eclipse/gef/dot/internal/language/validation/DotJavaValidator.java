@@ -56,7 +56,6 @@ import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.parser.IParser;
 import org.eclipse.xtext.validation.AbstractInjectableValidator;
 import org.eclipse.xtext.validation.Check;
-import org.eclipse.xtext.validation.RangeBasedDiagnostic;
 
 import com.google.inject.Injector;
 
@@ -105,14 +104,6 @@ public class DotJavaValidator extends AbstractDotJavaValidator {
 		DotColorJavaValidator.globalColorScheme = DotAstHelper
 				.getColorSchemeAttributeValue(attribute);
 
-		List<Diagnostic> diagnostics = DotAttributes.validateAttributeRawValue(
-				DotAttributes.getContext(attribute), attributeName,
-				attributeValue);
-
-		// reset the state of the DotColorValidator
-		DotColorJavaValidator.globalColorScheme = null;
-		DotColorJavaValidator.considerDefaultColorScheme = false;
-
 		List<INode> nodes = NodeModelUtils.findNodesForFeature(attribute,
 				DotPackage.Literals.ATTRIBUTE__VALUE);
 		if (nodes.size() != 1) {
@@ -122,67 +113,27 @@ public class DotJavaValidator extends AbstractDotJavaValidator {
 			return;
 		}
 
-		INode node = nodes.get(0);
-		int attributeValueStartOffset = node.getOffset();
+		int attributeValueStartOffsetIncrease = 0;
 		if (attributeValue.getType() == ID.Type.HTML_STRING
 				|| attributeValue.getType() == ID.Type.QUOTED_STRING) {
 			// +1 is needed because of the < symbol (indicating the
 			// beginning of a html-like label) or " symbol (indicating the
 			// beginning of a quoted string)
-			attributeValueStartOffset++;
+			attributeValueStartOffsetIncrease++;
 		}
 
-		for (Diagnostic d : diagnostics) {
-			if (d instanceof RangeBasedDiagnostic) {
-				RangeBasedDiagnostic rangeBasedDiagnostic = (RangeBasedDiagnostic) d;
-				String message = rangeBasedDiagnostic.getMessage();
-				int length = rangeBasedDiagnostic.getLength();
-				String code = rangeBasedDiagnostic.getIssueCode();
-				String[] issueData = rangeBasedDiagnostic.getIssueData();
-				int offset = rangeBasedDiagnostic.getOffset()
-						+ attributeValueStartOffset;
-				switch (d.getSeverity()) {
-				case Diagnostic.ERROR:
-					getMessageAcceptor().acceptError(message, attribute, offset,
-							length, code, issueData);
-					break;
+		DotSubgrammarValidationMessageAcceptor messageAcceptor = new DotSubgrammarValidationMessageAcceptor(
+				attribute, DotPackage.Literals.ATTRIBUTE__VALUE,
+				"record-based label", getMessageAcceptor(),
+				attributeValueStartOffsetIncrease);
 
-				case Diagnostic.WARNING:
-					getMessageAcceptor().acceptWarning(message, attribute,
-							offset, length, code, issueData);
-					break;
+		List<Diagnostic> diagnostics = DotAttributes.validateAttributeRawValue(
+				DotAttributes.getContext(attribute), attributeName,
+				attributeValue, messageAcceptor);
 
-				case Diagnostic.INFO:
-					getMessageAcceptor().acceptInfo(message, attribute, offset,
-							length, code, issueData);
-					break;
-
-				}
-			} else {
-				switch (d.getSeverity()) {
-				case Diagnostic.ERROR:
-					getMessageAcceptor().acceptError(d.getMessage(), attribute,
-							DotPackage.Literals.ATTRIBUTE__VALUE,
-							INSIGNIFICANT_INDEX, attributeName,
-							attributeValue.toValue());
-					break;
-
-				case Diagnostic.WARNING:
-					getMessageAcceptor().acceptWarning(d.getMessage(),
-							attribute, DotPackage.Literals.ATTRIBUTE__VALUE,
-							INSIGNIFICANT_INDEX, attributeName,
-							attributeValue.toValue());
-					break;
-				case Diagnostic.INFO:
-					getMessageAcceptor().acceptInfo(d.getMessage(), attribute,
-							DotPackage.Literals.ATTRIBUTE__VALUE,
-							INSIGNIFICANT_INDEX, attributeName,
-							attributeValue.toValue());
-					break;
-
-				}
-			}
-		}
+		// reset the state of the DotColorValidator
+		DotColorJavaValidator.globalColorScheme = null;
+		DotColorJavaValidator.considerDefaultColorScheme = false;
 	}
 
 	/**
