@@ -103,7 +103,7 @@ public class DotColorUtil {
 	 * @return The color in javafx representation, or null if the javafx color
 	 *         representation cannot be determined.
 	 */
-	public String computeHtmlColor(String colorScheme, String htmlColor) {
+	public Color computeHtmlColor(String htmlColor) {
 		if (htmlColor == null) {
 			return null;
 		}
@@ -113,7 +113,7 @@ public class DotColorUtil {
 		EObject rootNode = parser.parse(new StringReader(htmlColor))
 				.getRootASTElement();
 		if (rootNode instanceof Color) {
-			return computeZestColor(colorScheme, (Color) rootNode);
+			return (Color) rootNode;
 		}
 		return null;
 	}
