@@ -51,7 +51,7 @@ import org.eclipse.gef.dot.internal.language.splinetype.SplineType;
 import org.eclipse.gef.dot.internal.language.style.EdgeStyle;
 import org.eclipse.gef.dot.internal.language.style.NodeStyle;
 import org.eclipse.gef.dot.internal.language.terminals.ID;
-import org.eclipse.gef.dot.internal.ui.DotNodePart;
+import org.eclipse.gef.dot.internal.ui.DotProperties;
 import org.eclipse.gef.fx.nodes.GeometryNode;
 import org.eclipse.gef.fx.nodes.OrthogonalRouter;
 import org.eclipse.gef.fx.nodes.PolylineInterpolator;
@@ -71,6 +71,8 @@ import org.eclipse.gef.layout.algorithms.TreeLayoutAlgorithm;
 import org.eclipse.gef.zest.fx.ZestProperties;
 
 import javafx.geometry.Bounds;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.text.Text;
 
 /**
@@ -127,6 +129,12 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 	}
 
 	protected void convertAttributes(Edge dot, Edge zest) {
+		// zest.attributesProperty().put(DotProperties.COLORUTIL__NE,
+		// colorUtil);
+		// zest.attributesProperty().put(DotProperties.FONTUTIL__NE, fontUtil);
+		// zest.attributesProperty().put(DotProperties.HTML_LIKE_DEFAULTS__NE,
+		// htmlLikeDefaults(dot));
+
 		// convert id and label
 		String dotId = DotAttributes.getId(dot);
 		if (dotId != null) {
@@ -139,17 +147,38 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 
 		String dotLabel = DotAttributes.getLabel(dot);
 		if (dotLabel != null) {
+			if (DotAttributes.getLabelRaw(dot)
+					.getType() == ID.Type.HTML_STRING) {
+				DotHTMLLabelJavaFxNode htmlNode = new DotHTMLLabelJavaFxNode(
+						colorUtil, fontUtil);
+				setHtmlDefaults(dot, htmlNode);
+				htmlNode.setLabel(dotLabel);
+				htmlNode.refreshFxElement();
+				DotProperties.setHtmlLikeLabel(zest,
+						htmlNode.getMasterFxElement());
+			}
 			dotLabel = decodeEscString(dotLabel, dot);
 			dotLabel = decodeLineBreak(dotLabel);
 			ZestProperties.setLabel(zest, dotLabel);
 			if (edgeLabelCssStyle != null) {
 				ZestProperties.setLabelCssStyle(zest, edgeLabelCssStyle);
 			}
+
 		}
 
 		// external label (xlabel)
 		String dotXLabel = DotAttributes.getXlabel(dot);
 		if (dotXLabel != null) {
+			if (DotAttributes.getXlabelRaw(dot)
+					.getType() == ID.Type.HTML_STRING) {
+				DotHTMLLabelJavaFxNode htmlNode = new DotHTMLLabelJavaFxNode(
+						colorUtil, fontUtil);
+				setHtmlDefaults(dot, htmlNode);
+				htmlNode.setLabel(dotXLabel);
+				htmlNode.refreshFxElement();
+				DotProperties.setHtmlLikeExternalLabel(zest,
+						htmlNode.getMasterFxElement());
+			}
 			dotXLabel = decodeEscString(dotXLabel, dot);
 			dotXLabel = decodeLineBreak(dotXLabel);
 			ZestProperties.setExternalLabel(zest, dotXLabel);
@@ -157,11 +186,22 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setExternalLabelCssStyle(zest,
 						edgeLabelCssStyle);
 			}
+
 		}
 
 		// head and tail labels (headlabel, taillabel)
 		String dotHeadLabel = DotAttributes.getHeadlabel(dot);
 		if (dotHeadLabel != null) {
+			if (DotAttributes.getHeadlabelRaw(dot)
+					.getType() == ID.Type.HTML_STRING) {
+				DotHTMLLabelJavaFxNode htmlNode = new DotHTMLLabelJavaFxNode(
+						colorUtil, fontUtil);
+				setHtmlSourceTargetDefaults(dot, htmlNode);
+				htmlNode.setLabel(dotHeadLabel);
+				htmlNode.refreshFxElement();
+				DotProperties.setHtmlLikeTargetLabel(zest,
+						htmlNode.getMasterFxElement());
+			}
 			dotHeadLabel = decodeEscString(dotHeadLabel, dot);
 			dotHeadLabel = decodeLineBreak(dotHeadLabel);
 			ZestProperties.setTargetLabel(zest, dotHeadLabel);
@@ -169,9 +209,20 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setTargetLabelCssStyle(zest,
 						targetSourceLabelCssStyle);
 			}
+
 		}
 		String dotTailLabel = DotAttributes.getTaillabel(dot);
 		if (dotTailLabel != null) {
+			if (DotAttributes.getTaillabelRaw(dot)
+					.getType() == ID.Type.HTML_STRING) {
+				DotHTMLLabelJavaFxNode htmlNode = new DotHTMLLabelJavaFxNode(
+						colorUtil, fontUtil);
+				setHtmlSourceTargetDefaults(dot, htmlNode);
+				htmlNode.setLabel(dotTailLabel);
+				htmlNode.refreshFxElement();
+				DotProperties.setHtmlLikeSourceLabel(zest,
+						htmlNode.getMasterFxElement());
+			}
 			dotTailLabel = decodeEscString(dotTailLabel, dot);
 			dotTailLabel = decodeLineBreak(dotTailLabel);
 			ZestProperties.setSourceLabel(zest, dotTailLabel);
@@ -179,6 +230,7 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setSourceLabelCssStyle(zest,
 						targetSourceLabelCssStyle);
 			}
+
 		}
 
 		// convert edge style
@@ -540,6 +592,38 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				dotSize);
 	}
 
+	private void setHtmlSourceTargetDefaults(Edge dot,
+			DotHTMLLabelJavaFxNode htmlNode) {
+		Color dotColor = DotAttributes.getLabelfontcolorParsed(dot);
+		if (dotColor == null) {
+			dotColor = DotAttributes.getFontcolorParsed(dot);
+		}
+		String dotColorScheme = DotAttributes.getColorscheme(dot);
+		FontName dotFont = DotAttributes.getLabelfontnameParsed(dot);
+		if (dotFont == null) {
+			dotFont = DotAttributes.getFontnameParsed(dot);
+		}
+		Double dotSize = DotAttributes.getLabelfontsizeParsed(dot);
+		if (dotSize == null) {
+			dotSize = DotAttributes.getFontsizeParsed(dot);
+		}
+		htmlNode.setDefaults(dotFont, dotSize, dotColor, dotColorScheme);
+	}
+
+	private void setHtmlDefaults(Edge dot, DotHTMLLabelJavaFxNode htmlNode) {
+		htmlNode.setDefaults(DotAttributes.getFontnameParsed(dot),
+				DotAttributes.getFontsizeParsed(dot),
+				DotAttributes.getFontcolorParsed(dot),
+				DotAttributes.getColorscheme(dot));
+	}
+
+	private void setHtmlDefaults(Node dot, DotHTMLLabelJavaFxNode htmlNode) {
+		htmlNode.setDefaults(DotAttributes.getFontnameParsed(dot),
+				DotAttributes.getFontsizeParsed(dot),
+				DotAttributes.getFontcolorParsed(dot),
+				DotAttributes.getColorscheme(dot));
+	}
+
 	private String computeZestLabelCssStyle(Color dotColor,
 			String dotColorScheme, FontName dotFont, Double dotSize) {
 		StringBuilder zestStyle = new StringBuilder();
@@ -572,6 +656,12 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 	}
 
 	protected void convertAttributes(Node dot, Node zest) {
+		// zest.attributesProperty().put(DotProperties.COLORUTIL__NE,
+		// colorUtil);
+		// zest.attributesProperty().put(DotProperties.FONTUTIL__NE, fontUtil);
+		// zest.attributesProperty().put(DotProperties.HTML_LIKE_DEFAULTS__NE,
+		// htmlLikeDefaults(dot));
+
 		// for record shape (where Label is consumed by the Zest shape)
 		org.eclipse.gef.dot.internal.language.shape.Shape dotShape = DotAttributes
 				.getShapeParsed(dot);
@@ -659,7 +749,7 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 		}
 
 		if (zestShape != null) {
-			if (!isHtmlLabel && zestShapeStyle.length() > 0) {
+			if (zestShapeStyle.length() > 0) {
 				if (innerShape != null) {
 					String style = zestShapeStyle.toString();
 					innerShape.setStyle(style);
@@ -671,11 +761,10 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 			ZestProperties.setShape(zest, zestShape);
 			if (innerShape != null) {
 				// TODO: enhance zest capabilities
+				zest.attributesProperty().put(DotProperties.INNER_SHAPE__N,
+						innerShape);
 				zest.attributesProperty().put(
-						DotNodePart.DOT_PROPERTY_INNER_SHAPE__N, innerShape);
-				zest.attributesProperty().put(
-						DotNodePart.DOT_PROPERTY_INNER_SHAPE_DISTANCE__N,
-						innerDistance);
+						DotProperties.INNER_SHAPE_DISTANCE__N, innerDistance);
 			}
 		}
 
@@ -686,20 +775,22 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 		// TODO check if we can move this in front of the shape section above to
 		// coincide with the label
 		if (isHtmlLabel) {
-			// HTML label is treated as shape only
-			// the surrounding shape is missing here!!!
-			DotHTMLLabelJavaFxNode htmlNode = new DotHTMLLabelJavaFxNode(
-					dotLabel, DotAttributes.getFontname(dot),
-					DotAttributes.getFontsize(dot),
-					DotAttributes.getFontcolor(dot),
-					DotAttributes.getColorscheme(dot), colorUtil, fontUtil);
-			ZestProperties.setShape(zest, htmlNode.getFxElement());
-			// TODO Surround the HTML label with the shape as set above
+			// zest.attributesProperty().put(DotProperties.HTML_LIKE_LABEL__NE,
+			// Boolean.TRUE);
 
-			Bounds htmlNodeBounds = htmlNode.getBounds();
-			zestWidth = htmlNodeBounds.getWidth();
-			zestHeight = htmlNodeBounds.getHeight();
-		} else if (!isRecordBasedShape) {
+			DotHTMLLabelJavaFxNode htmlNode = new DotHTMLLabelJavaFxNode(
+					colorUtil, fontUtil);
+			setHtmlDefaults(dot, htmlNode);
+			htmlNode.setLabel(dotLabel);
+			htmlNode.refreshFxElement();
+			DotProperties.setHtmlLikeLabel(zest, htmlNode.getMasterFxElement());
+
+			// Bounds htmlNodeBounds = htmlNode.getBounds();
+			// zestWidth = htmlNodeBounds.getWidth();
+			// zestHeight = htmlNodeBounds.getHeight();
+		}
+
+		if (!isRecordBasedShape) {
 			// The label of a record based node shape is consumed by the zest
 			// shape hence, it needs not to be set again.
 
@@ -712,12 +803,23 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 		// external label (xlabel)
 		String dotXLabel = DotAttributes.getXlabel(dot);
 		if (dotXLabel != null) {
+			if (DotAttributes.getXlabelRaw(dot)
+					.getType() == ID.Type.HTML_STRING) {
+				DotHTMLLabelJavaFxNode htmlNode = new DotHTMLLabelJavaFxNode(
+						colorUtil, fontUtil);
+				setHtmlDefaults(dot, htmlNode);
+				htmlNode.setLabel(dotXLabel);
+				htmlNode.refreshFxElement();
+				DotProperties.setHtmlLikeExternalLabel(zest,
+						htmlNode.getMasterFxElement());
+			}
 			dotXLabel = decodeEscString(dotXLabel, dot);
 			ZestProperties.setExternalLabel(zest, dotXLabel);
 			if (zestNodeLabelCssStyle != null) {
 				ZestProperties.setExternalLabelCssStyle(zest,
 						zestNodeLabelCssStyle);
 			}
+
 		}
 
 		// In case of a record based node shape the label is consumed by the
@@ -767,6 +869,44 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 		}
 
 	}
+
+	// private Map<String, String> htmlLikeDefaults(Edge dot) {
+	// Map<String, String> defaults = new HashMap<>();
+	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_COLOR,
+	// DotAttributes.getFontcolor(dot));
+	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_COLOR_SOURCETARGET,
+	// DotAttributes.getLabelfontcolorParsed(dot) != null
+	// ? DotAttributes.getLabelfontcolor(dot)
+	// : DotAttributes.getFontcolor(dot));
+	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_FACE,
+	// DotAttributes.getFontname(dot));
+	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_FACE_SOURCETARGET,
+	// DotAttributes.getLabelfontnameParsed(dot) != null
+	// ? DotAttributes.getLabelfontname(dot)
+	// : DotAttributes.getFontname(dot));
+	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_SIZE,
+	// DotAttributes.getFontsize(dot));
+	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_SIZE_SOURCETARGET,
+	// DotAttributes.getLabelfontsizeParsed(dot) != null
+	// ? DotAttributes.getLabelfontsize(dot)
+	// : DotAttributes.getFontsize(dot));
+	// defaults.put(DotHTMLLabelJavaFxNode.COLORSCHEME,
+	// DotAttributes.getColorscheme(dot));
+	// return defaults;
+	// }
+	//
+	// private Map<String, String> htmlLikeDefaults(Node dot) {
+	// Map<String, String> defaults = new HashMap<>();
+	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_COLOR,
+	// DotAttributes.getFontcolor(dot));
+	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_FACE,
+	// DotAttributes.getFontname(dot));
+	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_SIZE,
+	// DotAttributes.getFontsize(dot));
+	// defaults.put(DotHTMLLabelJavaFxNode.COLORSCHEME,
+	// DotAttributes.getColorscheme(dot));
+	// return defaults;
+	// }
 
 	private String computeTooltip(EscString dotTooltip) {
 		// TODO: consider EscString Justification
@@ -906,6 +1046,22 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 			options = new Options();
 		}
 		return options;
+	}
+
+	/**
+	 * Bounds for the JavaFxElement after CSS
+	 *
+	 * @return Bounds
+	 */
+	public Bounds getBounds(javafx.scene.Node fxNode) {
+		// TODO css class
+		Group fxElement = new Group(fxNode);
+		@SuppressWarnings("unused") // group layout only works, if the group is
+		// included in a scene.
+		Scene scene = new Scene(fxElement);
+		fxElement.applyCss();
+		fxElement.layout();
+		return fxElement.getBoundsInParent();
 	}
 
 }

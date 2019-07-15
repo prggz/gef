@@ -13,6 +13,7 @@
 package org.eclipse.gef.dot.internal.ui.conversion;
 
 import org.eclipse.gef.dot.internal.language.shape.PolygonBasedNodeShape;
+import org.eclipse.gef.dot.internal.ui.DotNoneShape;
 import org.eclipse.gef.fx.nodes.GeometryNode;
 import org.eclipse.gef.geometry.planar.Ellipse;
 import org.eclipse.gef.geometry.planar.IGeometry;
@@ -40,7 +41,6 @@ class DotPolygonBasedNodeShapes {
 		// (0,100) (100,100)
 		switch (polygonShape) {
 		case BOX:
-		case NONE: // none is converted to a rectangle with no stroke
 		case RECT:
 		case RECTANGLE:
 		case SQUARE:
@@ -87,6 +87,9 @@ class DotPolygonBasedNodeShapes {
 			geometry = new Polygon(0, 50, 40, 0, 40, 15, 100, 15, 100, 100, 70,
 					100, 70, 85, 40, 85, 40, 100);
 			break;
+		case NONE:
+		case PLAINTEXT:
+			return new DotNoneShape();
 		case DOUBLEOCTAGON:
 		case OCTAGON:
 			geometry = new Polygon(0, 70, 0, 30, 30, 0, 70, 0, 100, 30, 100, 70,
@@ -133,7 +136,6 @@ class DotPolygonBasedNodeShapes {
 		case NOTE:
 		case NOVERHANG:
 		case PLAIN:
-		case PLAINTEXT:
 		case POLYGON:
 		case PRIMERSITE:
 		case PROMOTER:

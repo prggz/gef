@@ -48,7 +48,12 @@ public class DotContentPartFactory implements IContentPartFactory {
 		if (content instanceof Graph) {
 			part = new GraphPart();
 		} else if (content instanceof org.eclipse.gef.graph.Node) {
-			part = new DotNodePart();
+			if (DotProperties.getHtmlLikeLabel(
+					(org.eclipse.gef.graph.Node) content) != null) {
+				part = new DotHTMLNodePart();
+			} else {
+				part = new DotNodePart();
+			}
 		} else if (content instanceof Edge) {
 			part = new EdgePart();
 		} else if (content instanceof Pair
@@ -60,13 +65,41 @@ public class DotContentPartFactory implements IContentPartFactory {
 								.equals(((Pair) content).getValue())
 						|| ZestProperties.TARGET_LABEL__E
 								.equals(((Pair) content).getValue()))) {
-			part = new DotEdgeLabelPart();
+			if (ZestProperties.LABEL__NE.equals(((Pair) content).getValue())
+					&& DotProperties.getHtmlLikeLabel(
+							(org.eclipse.gef.graph.Edge) ((Pair) content)
+									.getKey()) != null
+					|| ZestProperties.EXTERNAL_LABEL__NE
+							.equals(((Pair) content).getValue())
+							&& DotProperties.getHtmlLikeExternalLabel(
+									(org.eclipse.gef.graph.Edge) ((Pair) content)
+											.getKey()) != null
+					|| ZestProperties.SOURCE_LABEL__E
+							.equals(((Pair) content).getValue())
+							&& DotProperties.getHtmlLikeSourceLabel(
+									(org.eclipse.gef.graph.Edge) ((Pair) content)
+											.getKey()) != null
+					|| ZestProperties.TARGET_LABEL__E
+							.equals(((Pair) content).getValue())
+							&& DotProperties.getHtmlLikeTargetLabel(
+									(org.eclipse.gef.graph.Edge) ((Pair) content)
+											.getKey()) != null) {
+				part = new DotHTMLEdgeLabelPart();
+			} else {
+				part = new DotEdgeLabelPart();
+			}
 		} else if (content instanceof Pair
 				&& ((Pair) content)
 						.getKey() instanceof org.eclipse.gef.graph.Node
 				&& ZestProperties.EXTERNAL_LABEL__NE
 						.equals(((Pair) content).getValue())) {
-			part = new DotNodeLabelPart();
+			if (DotProperties.getHtmlLikeExternalLabel(
+					(org.eclipse.gef.graph.Node) ((Pair) content)
+							.getKey()) != null) {
+				part = new DotHTMLNodeLabelPart();
+			} else {
+				part = new DotNodeLabelPart();
+			}
 		}
 		if (part != null) {
 			// TODO: use injector to create parts
