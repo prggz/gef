@@ -62,7 +62,7 @@ import javafx.scene.text.Text;
  * - check default padding
  * - consider implementing Port attribute on TD
  */
-public class DotHTMLLabelJavaFxNode {
+class DotHTMLLabelJavaFxNode {
 	final private DotColorUtil colorUtil;
 	final private DotFontUtil fontUtil;
 
@@ -97,19 +97,6 @@ public class DotHTMLLabelJavaFxNode {
 		nodeStyle.updateTagStyle(face, size, color);
 		this.colorscheme = colorscheme;
 	}
-
-	// public void setDefaults(Map<String, String> defaults) {
-	// nodeStyle.updateTagStyle(defaults.get(DEFAULT_FACE),
-	// defaults.get(DEFAULT_SIZE), defaults.get(DEFAULT_COLOR));
-	// colorscheme = defaults.get(COLORSCHEME);
-	// }
-	//
-	// public void setDefaultsSourceTarget(Map<String, String> defaults) {
-	// nodeStyle.updateTagStyle(defaults.get(DEFAULT_FACE_SOURCETARGET),
-	// defaults.get(DEFAULT_SIZE_SOURCETARGET),
-	// defaults.get(DEFAULT_COLOR_SOURCETARGET));
-	// colorscheme = defaults.get(COLORSCHEME);
-	// }
 
 	public void setLabel(String label) {
 		root = parseLabel(label);

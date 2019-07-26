@@ -129,12 +129,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 	}
 
 	protected void convertAttributes(Edge dot, Edge zest) {
-		// zest.attributesProperty().put(DotProperties.COLORUTIL__NE,
-		// colorUtil);
-		// zest.attributesProperty().put(DotProperties.FONTUTIL__NE, fontUtil);
-		// zest.attributesProperty().put(DotProperties.HTML_LIKE_DEFAULTS__NE,
-		// htmlLikeDefaults(dot));
-
 		// convert id and label
 		String dotId = DotAttributes.getId(dot);
 		if (dotId != null) {
@@ -163,7 +157,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 			if (edgeLabelCssStyle != null) {
 				ZestProperties.setLabelCssStyle(zest, edgeLabelCssStyle);
 			}
-
 		}
 
 		// external label (xlabel)
@@ -186,7 +179,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setExternalLabelCssStyle(zest,
 						edgeLabelCssStyle);
 			}
-
 		}
 
 		// head and tail labels (headlabel, taillabel)
@@ -209,7 +201,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setTargetLabelCssStyle(zest,
 						targetSourceLabelCssStyle);
 			}
-
 		}
 		String dotTailLabel = DotAttributes.getTaillabel(dot);
 		if (dotTailLabel != null) {
@@ -230,7 +221,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setSourceLabelCssStyle(zest,
 						targetSourceLabelCssStyle);
 			}
-
 		}
 
 		// convert edge style
@@ -656,12 +646,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 	}
 
 	protected void convertAttributes(Node dot, Node zest) {
-		// zest.attributesProperty().put(DotProperties.COLORUTIL__NE,
-		// colorUtil);
-		// zest.attributesProperty().put(DotProperties.FONTUTIL__NE, fontUtil);
-		// zest.attributesProperty().put(DotProperties.HTML_LIKE_DEFAULTS__NE,
-		// htmlLikeDefaults(dot));
-
 		// for record shape (where Label is consumed by the Zest shape)
 		org.eclipse.gef.dot.internal.language.shape.Shape dotShape = DotAttributes
 				.getShapeParsed(dot);
@@ -704,6 +688,19 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				? DotAttributes.getLabelRaw(dot)
 						.getType() == ID.Type.HTML_STRING
 				: false;
+
+		if (isHtmlLabel) {
+			DotHTMLLabelJavaFxNode htmlNode = new DotHTMLLabelJavaFxNode(
+					colorUtil, fontUtil);
+			setHtmlDefaults(dot, htmlNode);
+			htmlNode.setLabel(dotLabel);
+			htmlNode.refreshFxElement();
+			DotProperties.setHtmlLikeLabel(zest, htmlNode.getMasterFxElement());
+			// TODO redo bounds, prior code
+			// Bounds htmlNodeBounds = htmlNode.getBounds();
+			// zestWidth = htmlNodeBounds.getWidth();
+			// zestHeight = htmlNodeBounds.getHeight();
+		}
 
 		// label fontcolor, fontsize, fontname
 		String zestNodeLabelCssStyle = computeZestNodeLabelCssStyle(dot);
@@ -772,24 +769,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 			ZestProperties.setInvisible(zest, true);
 		}
 
-		// TODO check if we can move this in front of the shape section above to
-		// coincide with the label
-		if (isHtmlLabel) {
-			// zest.attributesProperty().put(DotProperties.HTML_LIKE_LABEL__NE,
-			// Boolean.TRUE);
-
-			DotHTMLLabelJavaFxNode htmlNode = new DotHTMLLabelJavaFxNode(
-					colorUtil, fontUtil);
-			setHtmlDefaults(dot, htmlNode);
-			htmlNode.setLabel(dotLabel);
-			htmlNode.refreshFxElement();
-			DotProperties.setHtmlLikeLabel(zest, htmlNode.getMasterFxElement());
-
-			// Bounds htmlNodeBounds = htmlNode.getBounds();
-			// zestWidth = htmlNodeBounds.getWidth();
-			// zestHeight = htmlNodeBounds.getHeight();
-		}
-
 		if (!isRecordBasedShape) {
 			// The label of a record based node shape is consumed by the zest
 			// shape hence, it needs not to be set again.
@@ -819,7 +798,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setExternalLabelCssStyle(zest,
 						zestNodeLabelCssStyle);
 			}
-
 		}
 
 		// In case of a record based node shape the label is consumed by the
@@ -869,44 +847,6 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 		}
 
 	}
-
-	// private Map<String, String> htmlLikeDefaults(Edge dot) {
-	// Map<String, String> defaults = new HashMap<>();
-	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_COLOR,
-	// DotAttributes.getFontcolor(dot));
-	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_COLOR_SOURCETARGET,
-	// DotAttributes.getLabelfontcolorParsed(dot) != null
-	// ? DotAttributes.getLabelfontcolor(dot)
-	// : DotAttributes.getFontcolor(dot));
-	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_FACE,
-	// DotAttributes.getFontname(dot));
-	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_FACE_SOURCETARGET,
-	// DotAttributes.getLabelfontnameParsed(dot) != null
-	// ? DotAttributes.getLabelfontname(dot)
-	// : DotAttributes.getFontname(dot));
-	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_SIZE,
-	// DotAttributes.getFontsize(dot));
-	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_SIZE_SOURCETARGET,
-	// DotAttributes.getLabelfontsizeParsed(dot) != null
-	// ? DotAttributes.getLabelfontsize(dot)
-	// : DotAttributes.getFontsize(dot));
-	// defaults.put(DotHTMLLabelJavaFxNode.COLORSCHEME,
-	// DotAttributes.getColorscheme(dot));
-	// return defaults;
-	// }
-	//
-	// private Map<String, String> htmlLikeDefaults(Node dot) {
-	// Map<String, String> defaults = new HashMap<>();
-	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_COLOR,
-	// DotAttributes.getFontcolor(dot));
-	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_FACE,
-	// DotAttributes.getFontname(dot));
-	// defaults.put(DotHTMLLabelJavaFxNode.DEFAULT_SIZE,
-	// DotAttributes.getFontsize(dot));
-	// defaults.put(DotHTMLLabelJavaFxNode.COLORSCHEME,
-	// DotAttributes.getColorscheme(dot));
-	// return defaults;
-	// }
 
 	private String computeTooltip(EscString dotTooltip) {
 		// TODO: consider EscString Justification

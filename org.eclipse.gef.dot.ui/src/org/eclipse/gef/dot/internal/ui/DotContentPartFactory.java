@@ -9,6 +9,7 @@
  * Contributors:
  *     Tamas Miklossy (itemis AG) - initial API and implementation (bug #538226)
  *     Zoey Prigge    (itemis AG) - DotGraphView: FontName support (bug #541056)
+ *                                - Html like content parts (bug #321775)
  *
  ***********************************************************************************************/
 package org.eclipse.gef.dot.internal.ui;
