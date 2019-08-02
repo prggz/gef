@@ -140,6 +140,7 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				dot);
 
 		String dotLabel = DotAttributes.getLabel(dot);
+		javafx.scene.Node dotLabelFxRepresentant = null;
 		if (dotLabel != null) {
 			if (DotAttributes.getLabelRaw(dot)
 					.getType() == ID.Type.HTML_STRING) {
@@ -148,8 +149,8 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				setHtmlDefaults(dot, htmlNode);
 				htmlNode.setLabel(dotLabel);
 				htmlNode.refreshFxElement();
-				DotProperties.setHtmlLikeLabel(zest,
-						htmlNode.getMasterFxElement());
+				dotLabelFxRepresentant = htmlNode.getMasterFxElement();
+				DotProperties.setHtmlLikeLabel(zest, dotLabelFxRepresentant);
 			}
 			dotLabel = decodeEscString(dotLabel, dot);
 			dotLabel = decodeLineBreak(dotLabel);
@@ -157,10 +158,15 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 			if (edgeLabelCssStyle != null) {
 				ZestProperties.setLabelCssStyle(zest, edgeLabelCssStyle);
 			}
+			if (dotLabelFxRepresentant == null) {
+				dotLabelFxRepresentant = dummyTextNodeWithStyle(dotLabel,
+						edgeLabelCssStyle);
+			}
 		}
 
 		// external label (xlabel)
 		String dotXLabel = DotAttributes.getXlabel(dot);
+		javafx.scene.Node dotXLabelFxRepresentant = null;
 		if (dotXLabel != null) {
 			if (DotAttributes.getXlabelRaw(dot)
 					.getType() == ID.Type.HTML_STRING) {
@@ -169,8 +175,9 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				setHtmlDefaults(dot, htmlNode);
 				htmlNode.setLabel(dotXLabel);
 				htmlNode.refreshFxElement();
+				dotXLabelFxRepresentant = htmlNode.getMasterFxElement();
 				DotProperties.setHtmlLikeExternalLabel(zest,
-						htmlNode.getMasterFxElement());
+						dotXLabelFxRepresentant);
 			}
 			dotXLabel = decodeEscString(dotXLabel, dot);
 			dotXLabel = decodeLineBreak(dotXLabel);
@@ -179,10 +186,15 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setExternalLabelCssStyle(zest,
 						edgeLabelCssStyle);
 			}
+			if (dotXLabelFxRepresentant == null) {
+				dotXLabelFxRepresentant = dummyTextNodeWithStyle(dotXLabel,
+						edgeLabelCssStyle);
+			}
 		}
 
 		// head and tail labels (headlabel, taillabel)
 		String dotHeadLabel = DotAttributes.getHeadlabel(dot);
+		javafx.scene.Node dotHeadLabelFxRepresentant = null;
 		if (dotHeadLabel != null) {
 			if (DotAttributes.getHeadlabelRaw(dot)
 					.getType() == ID.Type.HTML_STRING) {
@@ -191,8 +203,9 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				setHtmlSourceTargetDefaults(dot, htmlNode);
 				htmlNode.setLabel(dotHeadLabel);
 				htmlNode.refreshFxElement();
+				dotHeadLabelFxRepresentant = htmlNode.getMasterFxElement();
 				DotProperties.setHtmlLikeTargetLabel(zest,
-						htmlNode.getMasterFxElement());
+						dotHeadLabelFxRepresentant);
 			}
 			dotHeadLabel = decodeEscString(dotHeadLabel, dot);
 			dotHeadLabel = decodeLineBreak(dotHeadLabel);
@@ -201,8 +214,13 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setTargetLabelCssStyle(zest,
 						targetSourceLabelCssStyle);
 			}
+			if (dotHeadLabelFxRepresentant == null) {
+				dotHeadLabelFxRepresentant = dummyTextNodeWithStyle(
+						dotHeadLabel, targetSourceLabelCssStyle);
+			}
 		}
 		String dotTailLabel = DotAttributes.getTaillabel(dot);
+		javafx.scene.Node dotTailLabelFxRepresentant = null;
 		if (dotTailLabel != null) {
 			if (DotAttributes.getTaillabelRaw(dot)
 					.getType() == ID.Type.HTML_STRING) {
@@ -211,8 +229,9 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				setHtmlSourceTargetDefaults(dot, htmlNode);
 				htmlNode.setLabel(dotTailLabel);
 				htmlNode.refreshFxElement();
+				dotTailLabelFxRepresentant = htmlNode.getMasterFxElement();
 				DotProperties.setHtmlLikeSourceLabel(zest,
-						htmlNode.getMasterFxElement());
+						dotTailLabelFxRepresentant);
 			}
 			dotTailLabel = decodeEscString(dotTailLabel, dot);
 			dotTailLabel = decodeLineBreak(dotTailLabel);
@@ -220,6 +239,10 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 			if (targetSourceLabelCssStyle != null) {
 				ZestProperties.setSourceLabelCssStyle(zest,
 						targetSourceLabelCssStyle);
+			}
+			if (dotTailLabelFxRepresentant == null) {
+				dotTailLabelFxRepresentant = dummyTextNodeWithStyle(
+						dotTailLabel, targetSourceLabelCssStyle);
 			}
 		}
 
@@ -451,8 +474,9 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 			String dotLp = DotAttributes.getLp(dot);
 			if (dotLabel != null && dotLp != null
 					&& !options().ignorePositions) {
-				ZestProperties.setLabelPosition(zest, computeZestLabelPosition(
-						DotAttributes.getLpParsed(dot), dotLabel));
+				ZestProperties.setLabelPosition(zest,
+						computeZestLabelPosition(DotAttributes.getLpParsed(dot),
+								dotLabelFxRepresentant));
 			}
 
 			// external label position (xlp)
@@ -461,7 +485,8 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 					&& !options().ignorePositions) {
 				ZestProperties.setExternalLabelPosition(zest,
 						computeZestLabelPosition(
-								DotAttributes.getXlpParsed(dot), dotXLabel));
+								DotAttributes.getXlpParsed(dot),
+								dotXLabelFxRepresentant));
 			}
 			// head and tail label positions (head_lp, tail_lp)
 			String headLp = DotAttributes.getHeadLp(dot);
@@ -470,7 +495,7 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setTargetLabelPosition(zest,
 						computeZestLabelPosition(
 								DotAttributes.getHeadLpParsed(dot),
-								dotHeadLabel));
+								dotHeadLabelFxRepresentant));
 			}
 			String tailLp = DotAttributes.getTailLp(dot);
 			if (dotTailLabel != null && tailLp != null
@@ -478,7 +503,7 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				ZestProperties.setSourceLabelPosition(zest,
 						computeZestLabelPosition(
 								DotAttributes.getTailLpParsed(dot),
-								dotTailLabel));
+								dotTailLabelFxRepresentant));
 			}
 		}
 	}
@@ -781,6 +806,7 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 
 		// external label (xlabel)
 		String dotXLabel = DotAttributes.getXlabel(dot);
+		javafx.scene.Node dotXLabelFxRepresentant = null;
 		if (dotXLabel != null) {
 			if (DotAttributes.getXlabelRaw(dot)
 					.getType() == ID.Type.HTML_STRING) {
@@ -789,13 +815,19 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 				setHtmlDefaults(dot, htmlNode);
 				htmlNode.setLabel(dotXLabel);
 				htmlNode.refreshFxElement();
+				dotXLabelFxRepresentant = htmlNode.getMasterFxElement();
 				DotProperties.setHtmlLikeExternalLabel(zest,
-						htmlNode.getMasterFxElement());
+						dotXLabelFxRepresentant);
+
 			}
 			dotXLabel = decodeEscString(dotXLabel, dot);
 			ZestProperties.setExternalLabel(zest, dotXLabel);
 			if (zestNodeLabelCssStyle != null) {
 				ZestProperties.setExternalLabelCssStyle(zest,
+						zestNodeLabelCssStyle);
+			}
+			if (dotXLabelFxRepresentant == null) {
+				dotXLabelFxRepresentant = dummyTextNodeWithStyle(dotXLabel,
 						zestNodeLabelCssStyle);
 			}
 		}
@@ -808,7 +840,8 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 			// if we are to emulate dot and fixedsize=true is not given, we
 			// have to compute the size to enclose image, label, and margin.
 			// TODO: also enclose image and margin
-			Dimension labelSize = computeZestLabelSize(dotLabel);
+			Dimension labelSize = computeZestLabelSize(
+					dummyTextNodeWithStyle(dotLabel, zestNodeLabelCssStyle));
 			ZestProperties.setSize(zest, Dimension
 					.max(new Dimension(zestWidth, zestHeight), labelSize));
 		} else {
@@ -843,7 +876,8 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 			org.eclipse.gef.dot.internal.language.point.Point dotXlpParsed = DotAttributes
 					.getXlpParsed(dot);
 			ZestProperties.setExternalLabelPosition(zest,
-					computeZestLabelPosition(dotXlpParsed, dotXLabel));
+					computeZestLabelPosition(dotXlpParsed,
+							dotXLabelFxRepresentant));
 		}
 
 	}
@@ -866,15 +900,21 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 
 	private Point computeZestLabelPosition(
 			org.eclipse.gef.dot.internal.language.point.Point dotLabelPosition,
-			String labelText) {
-		Dimension labelSize = computeZestLabelSize(labelText);
+			javafx.scene.Node fxNode) {
+		Dimension labelSize = computeZestLabelSize(fxNode);
 		return computeZestPosition(dotLabelPosition, labelSize.getWidth(),
 				labelSize.getHeight());
 	}
 
-	Dimension computeZestLabelSize(String labelText) {
+	javafx.scene.Node dummyTextNodeWithStyle(String labelText, String css) {
 		// TODO: respect font settings (font name and size)
-		Bounds layoutBounds = new Text(labelText).getLayoutBounds();
+		javafx.scene.Node fxNode = new Text(labelText);
+		fxNode.setStyle(css);
+		return fxNode;
+	}
+
+	Dimension computeZestLabelSize(javafx.scene.Node fxNode) {
+		Bounds layoutBounds = getBounds(fxNode);
 		return new Dimension(layoutBounds.getWidth(), layoutBounds.getHeight());
 	}
 
