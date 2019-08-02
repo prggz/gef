@@ -21,7 +21,7 @@ import javafx.scene.shape.Shape
 import org.eclipse.gef.dot.internal.DotImport
 import org.eclipse.gef.dot.internal.language.DotInjectorProvider
 import org.eclipse.gef.dot.internal.language.dot.DotAst
-import org.eclipse.gef.dot.internal.ui.DotNodePart
+import org.eclipse.gef.dot.internal.ui.DotProperties
 import org.eclipse.gef.dot.internal.ui.conversion.Dot2ZestGraphCopier
 import org.eclipse.gef.fx.nodes.GeometryNode
 import org.eclipse.gef.graph.Edge
@@ -39,7 +39,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static extension org.junit.Assert.*
-import org.eclipse.gef.dot.internal.ui.DotProperties
 
 /*
  * Test class containing test cases for the {@link Dot2ZestGraphCopier} class.
@@ -988,6 +987,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_fontcolor() {
 		'''
 			digraph {
@@ -1016,6 +1016,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_fontname() {
 		mockAvailableFonts("Comic Sans")
 		'''
@@ -1045,6 +1046,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_fontsize() {
 		'''
 			digraph {
@@ -1073,6 +1075,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_headlabel() {
 		'''
 			digraph {
@@ -1209,6 +1212,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_label001() {
 		// undirected edge label
 		'''
@@ -1236,6 +1240,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_label002() {
 		// undirected edge label indicating that the edge's name becomes its label
 		'''
@@ -1263,6 +1268,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_label003() {
 		// directed edge label
 		'''
@@ -1291,6 +1297,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_label004() {
 		// directed edge label indicating that the edge's name becomes its label
 		'''
@@ -1319,6 +1326,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_label_and_id001() {
 		'''
 			graph {
@@ -1346,6 +1354,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_label_and_id002() {
 		'''
 			graph {
@@ -1373,6 +1382,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_labelfontcolor() {
 		// If unset, the fontcolor value is used.
 		'''
@@ -1427,6 +1437,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_labelfontname() {
 		mockAvailableFonts("Arial", "Comic Sans", "Times New Roman")
 		// If unset, the fontcolor value is used.
@@ -1495,6 +1506,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_labelfontsize() {
 		// If unset, the fontcolor value is used.
 		'''
@@ -1549,6 +1561,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_labeltooltip() {
 		'''
 			digraph {
@@ -1690,6 +1703,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_taillabel() {
 		'''
 			digraph {
@@ -1827,6 +1841,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_xlabel() {
 		'''
 			digraph {
@@ -2055,6 +2070,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def graph_forcelabels001() {
 		// This test shows current behaviour, it needs adaptation once the attribute is supported.
 		// The tested graph needs to have very close elements for this attribute to have an effect.
@@ -2091,6 +2107,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def graph_forcelabels002() {
 		
 		'''
@@ -3009,6 +3026,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def node_fontname003() {
 		mockAvailableFonts("Arial")
 		'''
@@ -3577,6 +3595,7 @@ class Dot2ZestGraphCopierTest {
 				}
 				Node9 {
 					element-label : plaintext
+					node-shape : DotNoneShape
 					node-size : Dimension(54.0, 36.0)
 				}
 				Node10 {
@@ -3690,7 +3709,7 @@ class Dot2ZestGraphCopierTest {
 				}
 				Node32 {
 					element-label : none
-					node-shape : Rectangle: (0.0, 0.0, 0.0, 0.0)
+					node-shape : DotNoneShape
 					node-size : Dimension(54.0, 36.0)
 				}
 				Node33 {
@@ -3948,6 +3967,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def node_xlabel() {
 		'''
 			graph {
@@ -4113,6 +4133,7 @@ class Dot2ZestGraphCopierTest {
 		''')
 	}
 
+	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def labeled_graph() {
 		val dot = DotTestUtils.labeledGraph
 		val zest = dot.copy
