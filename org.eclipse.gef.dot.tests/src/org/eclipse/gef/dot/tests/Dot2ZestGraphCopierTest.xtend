@@ -39,6 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import static extension org.junit.Assert.*
+import org.eclipse.gef.dot.internal.ui.DotProperties
 
 /*
  * Test class containing test cases for the {@link Dot2ZestGraphCopier} class.
@@ -5117,7 +5118,7 @@ class Dot2ZestGraphCopierTest {
 	private static class NodeShapePrettyPrinter extends DotGraphPrettyPrinter {
 		override protected prettyPrint(String attrKey, Object attrValue) {
 			return if (#[
-				DotNodePart.DOT_PROPERTY_INNER_SHAPE__N,
+				DotProperties.INNER_SHAPE__N,
 				ZestProperties.SHAPE__N
 			].contains(attrKey) && attrValue instanceof GeometryNode<?>) {
 				val node = attrValue as GeometryNode<?>
@@ -5131,7 +5132,7 @@ class Dot2ZestGraphCopierTest {
 	private static class RecordBasedShapePrettyPrinter extends DotGraphPrettyPrinter {
 		override protected prettyPrint(String attrKey, Object attrValue, String startIndent) {
 			return if (#[
-				DotNodePart.DOT_PROPERTY_INNER_SHAPE__N,
+				DotProperties.INNER_SHAPE__N,
 				ZestProperties.SHAPE__N
 			].contains(attrKey) && attrValue instanceof Pane) {
 				val node = attrValue as Pane
@@ -5145,7 +5146,7 @@ class Dot2ZestGraphCopierTest {
 	private static class NodeShapeWithStylePrettyPrinter extends DotGraphPrettyPrinter {
 		override protected prettyPrint(String attrKey, Object attrValue) {
 			return if (#[
-				DotNodePart.DOT_PROPERTY_INNER_SHAPE__N,
+				DotProperties.INNER_SHAPE__N,
 				ZestProperties.SHAPE__N
 			].contains(attrKey) && attrValue instanceof GeometryNode<?>) {
 				val node = attrValue as GeometryNode<?>
