@@ -73,13 +73,14 @@ public abstract class AbstractLabelPart extends AbstractContentPart<Group> imple
 		}
 	};
 
+	private Group group;
 	private Text text;
 
 	/**
 	 * Computes a position for this label.
 	 *
-	 * @return The computed position for this label in the coordinate system of
-	 *         the {@link GraphPart} that contains this label.
+	 * @return The computed position for this label in the coordinate system of the
+	 *         {@link GraphPart} that contains this label.
 	 */
 	public abstract Point computeLabelPosition();
 
@@ -89,13 +90,27 @@ public abstract class AbstractLabelPart extends AbstractContentPart<Group> imple
 	 * @return The created {@link Text}.
 	 */
 	protected Text createText() {
+		if (group == null) {
+			createVisualGroup();
+		}
 		text = new Text();
 		text.setTextOrigin(VPos.TOP);
 		text.setManaged(false);
 		text.setPickOnBounds(true);
 		// add css class
 		text.getStyleClass().add(CSS_CLASS_LABEL);
+		createVisualGroup().getChildren().add(text);
 		return text;
+	}
+
+	/**
+	 * Creates the visual group
+	 *
+	 * @return The created {@link Group}.
+	 */
+	protected Group createVisualGroup() {
+		group = new Group();
+		return (group);
 	}
 
 	@Override
@@ -157,8 +172,7 @@ public abstract class AbstractLabelPart extends AbstractContentPart<Group> imple
 	/**
 	 * Retrieves the position attribute key for the given label role.
 	 *
-	 * @return The key via which to retrieve the position attribute for the
-	 *         label.
+	 * @return The key via which to retrieve the position attribute for the label.
 	 */
 	protected String getLabelPositionAttributeKey() {
 		String labelRole = getContent().getValue();
@@ -188,6 +202,15 @@ public abstract class AbstractLabelPart extends AbstractContentPart<Group> imple
 	}
 
 	/**
+	 * Returns the group visual.
+	 *
+	 * @return The {@link Group} used as visual.
+	 */
+	protected Group getGroup() {
+		return group;
+	}
+
+	/**
 	 * Recomputes the label position.
 	 */
 	public void recomputeLabelPosition() {
@@ -197,10 +220,8 @@ public abstract class AbstractLabelPart extends AbstractContentPart<Group> imple
 	/**
 	 * Adjusts the label's position to fit the given {@link Point}.
 	 *
-	 * @param visual
-	 *            This node's visual.
-	 * @param position
-	 *            This node's position.
+	 * @param visual   This node's visual.
+	 * @param position This node's position.
 	 */
 	protected void refreshPosition(Node visual, Point position) {
 		if (position != null) {
@@ -223,8 +244,7 @@ public abstract class AbstractLabelPart extends AbstractContentPart<Group> imple
 	/**
 	 * Sets the stored label position to the given value.
 	 *
-	 * @param computedPosition
-	 *            The new label position.
+	 * @param computedPosition The new label position.
 	 */
 	public void setLabelPosition(Point computedPosition) {
 		getContent().getKey().getAttributes().put(getLabelPositionAttributeKey(), computedPosition);

@@ -28,7 +28,6 @@ import com.google.common.collect.SetMultimap;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.text.Text;
 import javafx.util.Pair;
 
 /**
@@ -57,10 +56,9 @@ public class NodeLabelPart extends AbstractLabelPart {
 
 	@Override
 	protected Group doCreateVisual() {
-		Text text = createText();
-		Group g = new Group();
+		Group g = createVisualGroup();
 		g.getStyleClass().add(NodePart.CSS_CLASS);
-		g.getChildren().add(text);
+		createText();
 		return g;
 	}
 
@@ -101,11 +99,11 @@ public class NodeLabelPart extends AbstractLabelPart {
 	}
 
 	/**
-	 * Returns the {@link NodePart} for which this {@link NodeLabelPart}
-	 * displays the label.
+	 * Returns the {@link NodePart} for which this {@link NodeLabelPart} displays
+	 * the label.
 	 *
-	 * @return The {@link NodePart} for which this {@link NodeLabelPart}
-	 *         displays the label.
+	 * @return The {@link NodePart} for which this {@link NodeLabelPart} displays
+	 *         the label.
 	 */
 	public IVisualPart<? extends javafx.scene.Node> getFirstAnchorage() {
 		return getAnchoragesUnmodifiable().isEmpty() ? null

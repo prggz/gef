@@ -28,7 +28,6 @@ import com.google.common.collect.SetMultimap;
 
 import javafx.scene.Group;
 import javafx.scene.control.Tooltip;
-import javafx.scene.text.Text;
 import javafx.util.Pair;
 
 /**
@@ -60,10 +59,9 @@ public class EdgeLabelPart extends AbstractLabelPart {
 
 	@Override
 	protected Group doCreateVisual() {
-		Text text = createText();
-		Group g = new Group();
+		Group g = createVisualGroup();
 		g.getStyleClass().add(EdgePart.CSS_CLASS);
-		g.getChildren().add(text);
+		createText();
 		return g;
 	}
 
@@ -145,7 +143,7 @@ public class EdgeLabelPart extends AbstractLabelPart {
 		Point endPoint = connection.getEndPoint();
 		Vector v = new Vector(endPoint, connection.getStartPoint());
 		if (!v.isNull()) {
-			v = v.getNormalized().getMultiplied(getText().getLayoutBounds().getHeight());
+			v = v.getNormalized().getMultiplied(getGroup().getLayoutBounds().getHeight());
 		}
 		return NodeUtils.sceneToLocal(getVisual().getParent(),
 				NodeUtils.localToScene(connection, endPoint.getTranslated(v.x, v.y)));
@@ -187,7 +185,7 @@ public class EdgeLabelPart extends AbstractLabelPart {
 		Point startPoint = connection.getStartPoint();
 		Vector v = new Vector(startPoint, connection.getEndPoint());
 		if (!v.isNull()) {
-			v = v.getNormalized().getMultiplied(getText().getLayoutBounds().getHeight());
+			v = v.getNormalized().getMultiplied(getGroup().getLayoutBounds().getHeight());
 		}
 		return NodeUtils.sceneToLocal(getVisual().getParent(),
 				NodeUtils.localToScene(connection, startPoint.getTranslated(v.x, v.y)));
@@ -240,10 +238,8 @@ public class EdgeLabelPart extends AbstractLabelPart {
 	/**
 	 * Changes the tooltip of this {@link EdgeLabelPart} to the given value.
 	 *
-	 * @param tooltipNode
-	 *            the tooltip node
-	 * @param tooltip
-	 *            the tooltip text
+	 * @param tooltipNode the tooltip node
+	 * @param tooltip     the tooltip text
 	 * @since 5.1
 	 */
 	protected void refreshTooltip(Tooltip tooltipNode, String tooltip) {
