@@ -1032,7 +1032,9 @@ public class Dot2ZestAttributesConverter implements IAttributeCopier {
 	/**
 	 * Bounds for the JavaFxElement after CSS
 	 *
-	 * @return Bounds
+	 * @param fxNode
+	 *            the fxnode of which the bounds should be calculated
+	 * @return the bounds of the node
 	 */
 	public Bounds getBounds(javafx.scene.Node fxNode) {
 		// TODO css class
