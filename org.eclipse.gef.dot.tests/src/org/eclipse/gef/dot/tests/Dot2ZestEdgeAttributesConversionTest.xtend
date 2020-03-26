@@ -601,7 +601,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_label013() {
 		mockAvailableFonts("Bitstream Vera Sans")
 		'''
@@ -617,7 +616,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_externalLabel001() {
 		'''
 			digraph {
@@ -626,7 +624,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeExternalLabel("foobar")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_externalLabel002() {
 		'''
 			digraph {
@@ -635,7 +632,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeExternalLabel("foo\nbar")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_externalLabel003() {
 		'''
 			digraph {
@@ -644,7 +640,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeExternalLabel("foo\nbar\nbaz")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_externalLabel004() {
 		'''
 			digraph {
@@ -669,7 +664,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeExternalLabel("g: testedGraphName e:1->2 h:2 t:1")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_externalLabel007() {
 		'''
 			digraph {
@@ -680,7 +674,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_externalLabel008() {
 		'''
 			digraph {
@@ -692,7 +685,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_externalLabel009() {
 		mockAvailableFonts("Arial")
 		'''
@@ -707,7 +699,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_externalLabel010() {
 		'''
 			digraph {
@@ -719,7 +710,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_externalLabel011() {
 		mockAvailableFonts("Arial")
 		'''
@@ -736,7 +726,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel001() {
 		'''
 			digraph {
@@ -745,7 +734,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeSourceLabel("foobar")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel002() {
 		'''
 			digraph {
@@ -754,7 +742,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeSourceLabel("foo\nbar")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel003() {
 		'''
 			digraph {
@@ -763,7 +750,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeSourceLabel("foo\nbar\nbaz")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel004() {
 		'''
 			digraph testedGraphName {
@@ -772,7 +758,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeSourceLabel("g: testedGraphName e:1->2 h:2 t:1")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel005() {
 		'''
 			digraph {
@@ -783,7 +768,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel006() {
 		'''
 			digraph {
@@ -795,7 +779,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel007() {
 		'''
 			digraph {
@@ -807,7 +790,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel008() {
 		'''
 			digraph {
@@ -819,7 +801,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel010() {
 		mockAvailableFonts("Times New Roman", "Helvetica")
 		'''
@@ -834,7 +815,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel011() {
 		mockAvailableFonts("Times New Roman", "Helvetica")
 		'''
@@ -849,7 +829,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel012() {
 		'''
 			digraph {
@@ -861,7 +840,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel013() {
 		'''
 			digraph {
@@ -873,7 +851,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_sourceLabel014() {
 		mockAvailableFonts("Courier New")
 		'''
@@ -890,7 +867,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel001() {
 		'''
 			digraph {
@@ -899,7 +875,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeTargetLabel("foobar")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel002() {
 		'''
 			digraph {
@@ -908,7 +883,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeTargetLabel("foo\nbar")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel003() {
 		'''
 			digraph {
@@ -917,7 +891,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeTargetLabel("foo\nbar\nbaz")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel004() {
 		'''
 			digraph testedGraphName {
@@ -935,7 +908,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		'''.assertEdgeTargetLabel("")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel006() {
 		'''
 			digraph {
@@ -946,7 +918,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel007() {
 		'''
 			digraph {
@@ -958,7 +929,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel008() {
 		'''
 			digraph {
@@ -970,7 +940,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel009() {
 		'''
 			digraph {
@@ -982,7 +951,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel010() {
 		mockAvailableFonts("Arial")
 		'''
@@ -997,7 +965,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel011() {
 		mockAvailableFonts("Liberation Serif", "Liberation Sans")
 		'''
@@ -1012,7 +979,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel012() {
 		'''
 			digraph {
@@ -1024,7 +990,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel013() {
 		'''
 			digraph {
@@ -1036,7 +1001,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel014() {
 		mockAvailableFonts("Courier New")
 		'''
@@ -1053,7 +1017,6 @@ class Dot2ZestEdgeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def edge_targetLabel015() {
 		mockAvailableFonts("Serif")
 		'''

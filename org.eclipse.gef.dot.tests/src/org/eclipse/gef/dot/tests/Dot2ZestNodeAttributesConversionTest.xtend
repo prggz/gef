@@ -116,7 +116,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def node_fontcolor006() {
 		'''
 			graph {
@@ -140,7 +139,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def node_fontname002() {
 		mockAvailableFonts("Arial")
 		'''
@@ -164,7 +162,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def node_fontsize002() {
 		'''
 			graph {
@@ -190,7 +187,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def node_fontstyles_combined002() {
 		mockAvailableFonts("Arial")
 		'''
@@ -408,7 +404,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		'''.assertNodeXLabel(null)
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def node_xlabel002() { 
 		'''
 			digraph {
@@ -417,7 +412,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		'''.assertNodeXLabel("fantastic label")
 	}
 
-	@Ignore("Needs FX initialization (Failing on Travis/Jenkins)")
 	@Test def node_xlabel003() { 
 		'''
 			digraph {
@@ -462,7 +456,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_penwidth_record001() {
 		'''
 			digraph{
@@ -474,7 +467,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 	
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_penwidth_record002() {
 		'''
 			digraph{
@@ -768,7 +760,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		'''.assertNodeStyle("")
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_record001() {
 		'''
 			digraph{
@@ -779,7 +770,6 @@ class Dot2ZestNodeAttributesConversionTest {
 			''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_record002() {
 		'''
 			digraph{
@@ -791,7 +781,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_record003() {
 		'''
 			digraph{
@@ -803,7 +792,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_record004() {
 		'''
 			digraph{
@@ -814,7 +802,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_record005() {
 		'''
 			digraph{
@@ -825,7 +812,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_record006() {
 		'''
 			digraph{
@@ -836,7 +822,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_record007() {
 		'''
 			graph {
@@ -848,7 +833,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_record008() {
 		'''
 			digraph {
@@ -859,7 +843,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_record009() {
 		'''
 			digraph {
@@ -870,7 +853,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_style_mrecord001() {
 		'''
 			digraph{
@@ -892,7 +874,6 @@ class Dot2ZestNodeAttributesConversionTest {
 		''')
 	}
 
-	@Ignore("Failing on Travis/Jenkins")
 	@Test def node_fill_record001() {
 		'''
 			digraph{
