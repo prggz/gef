@@ -94,14 +94,11 @@ public class DotColorUtil {
 	}
 
 	/**
-	 * Returns the java Fx representation of a HTML-like label color attribute
+	 * Returns the {@link Color} of a HTML-like label color attribute
 	 * 
-	 * @param colorScheme
-	 *            The colorscheme attribute value (or null if not defined).
 	 * @param htmlColor
 	 *            The string attribute value.
-	 * @return The color in javafx representation, or null if the javafx color
-	 *         representation cannot be determined.
+	 * @return The corresponding {@link Color}.
 	 */
 	public Color computeHtmlColor(String htmlColor) {
 		if (htmlColor == null) {
