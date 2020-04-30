@@ -50,6 +50,8 @@ import org.eclipse.xtext.ui.editor.doubleClicking.DoubleClickStrategyProvider;
 import org.eclipse.xtext.ui.editor.findrefs.IReferenceFinder;
 import org.eclipse.xtext.ui.editor.findrefs.ReferenceQueryExecutor;
 import org.eclipse.xtext.ui.editor.folding.IFoldingRegionProvider;
+import org.eclipse.xtext.ui.editor.formatting.IContentFormatterFactory;
+import org.eclipse.xtext.ui.editor.formatting2.ContentFormatterFactory;
 import org.eclipse.xtext.ui.editor.hover.IEObjectHover;
 import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider;
 import org.eclipse.xtext.ui.editor.hyperlinking.IHyperlinkHelper;
@@ -139,5 +141,11 @@ public class DotUiModule
 
 	public Class<? extends XtextSourceViewerConfiguration> bindXtextSourceViewerConfiguration() {
 		return DotSourceViewerConfiguration.class;
+	}
+
+	// contributed by
+	// org.eclipse.xtext.xtext.generator.formatting.Formatter2Fragment2
+	public Class<? extends IContentFormatterFactory> bindIContentFormatterFactory() {
+		return ContentFormatterFactory.class;
 	}
 }

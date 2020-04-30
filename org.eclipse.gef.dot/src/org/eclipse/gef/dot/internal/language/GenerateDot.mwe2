@@ -195,6 +195,11 @@ Workflow {
 			fileWizard = {
 				generate = true
 			}
+			
+			formatter = {
+				generateStub = true
+				generateXtendStub = true
+			}
 		}
 		language = StandardLanguage {
 			name = "org.eclipse.gef.dot.internal.language.DotArrowType"
